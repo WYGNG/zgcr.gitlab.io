@@ -12,6 +12,7 @@ pages:
   - npm install hexo-generator-index-pin-top --save
   - npm uninstall hexo-renderer-marked --save
   - npm install hexo-renderer-kramed --save
+  - npm install hexo-asset-image --save
   - npm install hexo-generator-searchdb --save
   - npm i --save hexo-wordcount
   - hexo clean
