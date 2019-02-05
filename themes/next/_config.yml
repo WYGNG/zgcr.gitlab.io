@@ -129,7 +129,7 @@ scheme: Pisces
 social:
   GitHub: https://github.com/zgcr || github
   E-Mail: mailto:zgcr@mail.ustc.edu.cn || envelope
-  微信: https://www.zgcr1991.com/about/ || weixin
+  微信&TIM: https://zgcr.gitlab.io/about/ || weixin
   CSDN: https://blog.csdn.net/zgcr || copyright  
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
@@ -152,6 +152,7 @@ links_layout: block
 #links_layout: inline
 links:
   百度: https://www.baidu.com/
+  谷歌: https://www.google.com/
 
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
@@ -345,7 +346,7 @@ font:
 # MathJax Support
 mathjax:
   enable: true
-  per_page: false
+  per_page: true
   cdn: //cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 
 # Han Support docs: https://hanzi.pro/
