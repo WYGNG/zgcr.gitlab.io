@@ -602,6 +602,12 @@ $code-font-size = 13px
 
 修改font-size-base后面的数值大小即可。
 
+# 设置文章代码高亮主题
+
+NexT使用Tomorrow Theme作为代码高亮，共有5款主题供你选择。NexT默认使用的是 白色的normal主题，可选的值有 normal，night，night blue，night bright，night eighties。
+
+只需打开hexo博客源码目录/themes/next目录下的_config.yml文件，修改其highlight_theme项值即可。
+
 # hexo博客显示自带图片
 
 一般情况下，在hexo博客中要显示图片，我们建议将图片上传到某个在线图床中，然后引用图片的URL即可，不建议将图片打包到网站的source文件夹中，这是因为图片一般都比较大， 且后面博客文章越来越多时，使用这种方式会使整个网站源码文件变得很大，不方便上传。
