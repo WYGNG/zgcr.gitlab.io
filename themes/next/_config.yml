@@ -382,8 +382,8 @@ changyan:
 # more info please open https://valine.js.org
 valine:
   enable: true
-  appid: 7sB96581GyO8wUXCw0hUFF5s-gzGzoHsz
-  appkey: 4u5Lzpf0EMoilFnc059SmTpV
+  appid: k8tAfLKoXFxwBqQTgbNJbgjC-gzGzoHsz
+  appkey: 5GJ1vqeoHXMCMOrtLb0Fnf1D
   notify: false # mail notifier , https://github.com/xCss/Valine/wiki
   verify: false # Verification code
   placeholder: 来啊，快活啊!  # comment box placeholder
