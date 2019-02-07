@@ -15,6 +15,8 @@ pages:
   - npm install hexo-asset-image --save
   - npm install hexo-generator-searchdb --save
   - npm install valine --save
+  - npm install --save hexo-helper-live2d
+  - npm install --save live2d-widget-model-tororo
   - npm i --save hexo-wordcount
   - hexo clean
   - hexo generate

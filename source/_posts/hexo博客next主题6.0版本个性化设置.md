@@ -815,6 +815,47 @@ post_meta:
 
 把updated_at设为true即可。
 
+# hexo博客添加live2d看板娘
+live2d的Github地址:https://github.com/EYHN/hexo-helper-live2d 。
+
+要预览各个模型的样子，可以从这里:https://github.com/xiazeyu/live2d-widget-models 获得模型名称，然后在这里:http://summerscar.me/live2dDemo/预览模型。推荐模型:wanko(小狗)、tororo(小猫)。
+
+首先在hexo博客源码目录运行下列命令：
+
+```
+npm install --save hexo-helper-live2d
+npm install --save live2d-widget-model-tororo
+```
+
+如果采用Gitlab CI方式部署hexo博客，请将上面两条命令添加到.gitlab-ci.yml文件中。
+
+然后打开hexo博客源码目录的_config.yml文件，在末尾添加下列代码：
+
+```
+# Live2D
+## https://github.com/xiazeyu/live2d-widget.js
+## https://l2dwidget.js.org/docs/class/src/index.js~L2Dwidget.html#instance-method-init
+live2d:
+  model:
+    scale: 1
+    hHeadPos: 0.5
+    vHeadPos: 0.618
+    use: live2d-widget-model-tororo
+  display:
+    superSample: 2
+    width: 100
+    height: 180
+    position: right
+    hOffset: -20
+    vOffset: -50
+  mobile:
+    show: true  
+    scale: 0.5
+  react:
+    opacityDefault: 0.7
+    opacityOnHover: 0.2
+```
+
 # hexo博客添加valine评论系统
 
 Valine是一款极简的评论系统。它的特点是：无后端实现；使用国内后端云服务提供商LeanCloud提供的存储服务；支持表情；支持邮件通知；支持验证码；支持 Markdown格式；支持匿名评论，无需注册和登录账号。

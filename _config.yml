@@ -85,3 +85,26 @@ search:
   field: post
   format: html
   limit: 10000
+
+# Live2D
+## https://github.com/xiazeyu/live2d-widget.js
+## https://l2dwidget.js.org/docs/class/src/index.js~L2Dwidget.html#instance-method-init
+live2d:
+  model:
+    scale: 1
+    hHeadPos: 0.5
+    vHeadPos: 0.618
+    use: live2d-widget-model-tororo
+  display:
+    superSample: 2
+    width: 100
+    height: 180
+    position: right
+    hOffset: -20
+    vOffset: -50
+  mobile:
+    show: true  
+    scale: 0.5
+  react:
+    opacityDefault: 0.7
+    opacityOnHover: 0.2
