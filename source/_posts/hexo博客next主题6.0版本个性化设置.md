@@ -846,6 +846,48 @@ valine:
 
 修改enable为true，修改appid和appkey为上面保存的App ID和App key。这样博客中的valine评论系统就开启了。
 
+评论的管理在leancloud官网，进入应用项目，选择左侧菜单存储->comment，就可以管理评论了。
+
+# hexo博客添加need more share2分享
+这个项目在Github上的仓库地址：https://github.com/revir/need-more-share2 。
+
+我们的next主题中已经集成了这个项目。打开hexo博客源码目录/themes/next目录下的_config.yml文件，找到相应部分代码，修改为以下代码：
+
+```
+needmoreshare2:
+  enable: true
+  postbottom:
+    enable: true
+    options:
+      iconStyle: default
+      boxForm: horizontal
+      position: bottomCenter
+      networks: Weibo,Wechat,Douban,Evernote,Facebook,Twitter
+  float:
+    enable: true
+    options:
+      iconStyle: default
+      boxForm: horizontal
+      position: topRight
+      networks: Weibo,Wechat,Douban,Evernote,Facebook,Twitter
+```
+
+注意从上到下三个enable分别是开启need more share2，开启底部的need more share2按钮，开启左侧悬浮的need more share2按钮。
+
+由于目前微信二维码不能正确加载，因此我们按照这个issue中最后仓库作者回复的方法修改一下:https://github.com/revir/need-more-share2/issues/4 。
+
+打开hexo博客源码目录\themes\next\source\lib\needsharebutton\needsharebutton.js文件，找到下面的代码：
+
+```
+var imgSrc = "https://api.qinco.me/api/qr?size=400&content=" + encodeURIComponent(myoptions.url);
+```
+
+修改为下面的代码即可。
+
+```
+var imgSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+encodeURIComponent(myoptions.url);
+```
+
 # Pisces Scheme修改内容板块的宽度
 
 打开hexo博客源码目录/themes/next/source/css/_schemes/Picses/_layout.styl文件，在末尾添加下列代码：

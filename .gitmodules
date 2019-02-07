@@ -1,0 +1,3 @@
+[submodule "source/plugin/need-more-share2"]
+	path = source/plugin/need-more-share2
+	url = git@github.com:revir/need-more-share2.git
