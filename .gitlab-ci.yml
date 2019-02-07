@@ -14,6 +14,7 @@ pages:
   - npm install hexo-renderer-kramed --save
   - npm install hexo-asset-image --save
   - npm install hexo-generator-searchdb --save
+  - npm install valine --save
   - npm i --save hexo-wordcount
   - hexo clean
   - hexo generate

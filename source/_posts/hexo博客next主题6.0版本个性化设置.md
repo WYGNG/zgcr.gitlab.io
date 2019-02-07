@@ -819,9 +819,15 @@ post_meta:
 
 Valine是一款极简的评论系统。它的特点是：无后端实现；使用国内后端云服务提供商LeanCloud提供的存储服务；支持表情；支持邮件通知；支持验证码；支持 Markdown格式；支持匿名评论，无需注册和登录账号。
 
-目前hexo博客next主题6.0版本中已经集成了valine系统，我们只需要做一些设置就可以使用了。
-
 首先在leancloud官网注册一个账号。官网地址: https://leancloud.cn/ 。新账号要先验证邮箱和手机号。然后点击创建应用，自己命名，选择开发版。选择刚创建好的应用，选择左侧菜单中的设置->应用key，保存App ID和App key，待会儿要用到。然后选择左侧菜单中的安全域名，填写你的博客的域名。
+
+打开hexo博客源码目录，使用下面的命令安装valine插件：
+
+```
+npm install valine --save
+```
+
+如果使用gitlab CI方式部署hexo博客，还要把上面这条命令加入.gitlab-ci.yml文件中。
 
 然后打开hexo博客源码目录/themes/next目录下的_config.yml文件，找到下列代码：
 
@@ -839,8 +845,6 @@ valine:
 ```
 
 修改enable为true，修改appid和appkey为上面保存的App ID和App key。这样博客中的valine评论系统就开启了。
-
-下面我们还可以开启valine评论系统收到评论时发送邮件提醒。登录leancloud官网，进入控制台，点击左侧菜单的云引擎->设置，按照此仓库中说明来填写各项信息：https://github.com/zhaojun1998/Valine-Admin 。
 
 # Pisces Scheme修改内容板块的宽度
 
