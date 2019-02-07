@@ -97,11 +97,11 @@ live2d:
     use: live2d-widget-model-tororo
   display:
     superSample: 2
-    width: 100
+    width: 90
     height: 180
     position: right
-    hOffset: -20
-    vOffset: -50
+    hOffset: -30
+    vOffset: -20
   mobile:
     show: true  
     scale: 0.5
