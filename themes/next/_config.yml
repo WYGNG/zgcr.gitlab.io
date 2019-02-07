@@ -381,15 +381,15 @@ changyan:
 # You can get your appid and appkey from https://leancloud.cn
 # more info please open https://valine.js.org
 valine:
-  enable: false
-  appid:  # your leancloud application appid
-  appkey:  # your leancloud application appkey
+  enable: true
+  appid: 7sB96581GyO8wUXCw0hUFF5s-gzGzoHsz
+  appkey: 4u5Lzpf0EMoilFnc059SmTpV
   notify: false # mail notifier , https://github.com/xCss/Valine/wiki
   verify: false # Verification code
-  placeholder: Just go go # comment box placeholder
+  placeholder: 来啊，快活啊!  # comment box placeholder
   avatar: mm # gravatar style
   guest_info: nick,mail,link # custom comment header
-  pageSize: 10 # pagination size
+  pageSize: 14 # pagination size
 
 
 # Support for youyan comments system.
@@ -398,7 +398,7 @@ valine:
 
 # Support for LiveRe comments system.
 # You can get your uid from https://livere.com/insight/myCode (General web site)
-#livere_uid: 
+#livere_uid: MTAyMC80MjUzMi8xOTA3OQ==
 
 # Gitment
 # Introduction: https://imsun.net/posts/gitment-introduction/
@@ -818,3 +818,4 @@ version: 5.1.4
 # 文章末尾添加“本文结束”标记
 passage_end_tag:
   enabled: true
+
