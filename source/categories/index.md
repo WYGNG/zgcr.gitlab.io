@@ -1,6 +1,7 @@
 ---
-title: 分类
+title: categories
 date: 2019-02-03 21:40:20
-type: categories
+type: "categories"
+layout: "categories"
 ---
 

@@ -1,0 +1,13 @@
+﻿[{
+    "avatar": "/medias/friends/1.jpg",
+    "name": "我的CSDN博客",
+    "introduction": "这是我的CSDN博客。",
+    "url": "https://blog.csdn.net/zgcr654321",
+    "title": "前去学习"
+}, {
+    "avatar": "/medias/friends/2.png",
+    "name": "我的Github",
+    "introduction": "这是我的Github。",
+    "url": "https://github.com/zgcr",
+    "title": "前去学习"
+}]
