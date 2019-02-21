@@ -4,6 +4,7 @@ date: 2019-02-05 14:38:49
 tags:
 - 博客搭建
 categories:
+- 各种环境搭建
 - 博客搭建
 ---
 
@@ -140,9 +141,9 @@ git push -u origin master
 
 域名购买可以在阿里云购买，购买后我们先点击控制台->域名->管理->免费开启ssl证书，申请ssl证书后，点击下载，选择其他，下载证书。然后打开我们的Gitlab pages仓库，选择左侧面板settings->pages，找到new domain。Domain项填入我们的个人域名，certificate和key分别复制我们下载下来的证书文件内容填入，然后点击create new domain。
 
-随后提示：This domain is not verified. You will need to verify ownership before access is enabled. 我们再打开阿里云的域名控制台，选择->域名->解析来设置一个用来验证域名的DNS解析：记录类型选择TXT，主机记录的域名前缀和我们domain项填的域名的前缀一致，记录值为Gitlab pages domain页面中的Verification status项中从gitlab-pages-verification-code=之后的字符串。然后点击retry vertification，成功后显示vertified。
+随后提示：This domain is not verified. You will need to verify ownership before access is enabled. 我们再打开阿里云的域名控制台，选择->域名->解析来设置一个用来验证域名的DNS解析，具体要求可以看域名的detail页面中的verify ownership链接中的说明。
 
-然后我们打开阿里云控制台->域名->域名解析，添加个人域名指向我们的Gitlab博客站点的默认域名:https://username.gitlab.io 的主机记录。一般我们添加两条主机记录，分别是前缀www和前缀@，记录类型选择CNAME，记录值填写默认域名：username.gitlab.io 。TTL最短10分钟，也就是10分钟后域名解析生效。生效后我们就可以使用个人域名来访问这个博客了。
+然后我们打开阿里云控制台->域名->域名解析，添加个人域名指向我们的Gitlab博客站点的默认域名:https://username.gitlab.io 的主机记录。添加一条主机记录，前缀www，记录类型选择CNAME，记录值填写默认域名：username.gitlab.io 。TTL最短10分钟，也就是10分钟后域名解析生效。生效后我们就可以使用个人域名来访问这个博客了。
 
 # 总结
 
