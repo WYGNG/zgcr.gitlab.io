@@ -2,10 +2,9 @@
 title: JetBrains CLion/IDEA/Pycharm基本设置
 date: 2019-02-20 21:32:38
 tags:
-- 编译器环境搭建
+- 各种环境搭建
 categories:
 - 各种环境搭建
-- 编译器环境搭建
 ---
 
 # CLion设置代码字体大小/设置Tab键退四格/安装cygwin编译器/设置project编译器
@@ -20,6 +19,7 @@ categories:
 我们还要给IDEA设置java解释器。首先下载一个java8的JDK，官网下载地址：https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html 。按提示安装即可。然后打开IDEA，选择file->project structrue->modules，选择你要设置解释器的project，修改 “Sources” 选项卡下的 “Language level” 及 “Dependencies”选项卡下的 “Module SDK” 。因为前面安装的是Java 8 JDK，所以Language level也选择8。dependencies也选择同样的Java 1.8 SDK。
 然后我们还要修改Java Compiler。选择File --> Settings --> Build,Execution,Deployment --> Compiler --> java Compiler，将Project bytecode version改成和JDK一样的版本，或者选same as language level。
 我们以JDBC-MySQL驱动包为例介绍如何在IDEA project中添加jar包。打开在IntelliJ IDEA中打开要添加jar包的Project，然后选择File->Project Structure->Libraries，点击+号，选中要添加的jar包,点击ok，添加成功。
+
 # PyCharm设置代码字体大小/设置Tab键退四格/设置project解释器
 打开PyCharm，file->settings->editor->font，选择Font可修改字体，选择Size可修改字体大小，选择Line spacing可修改行距。
 选择file->settings->editor->code style->Python，勾选Use tab character和Smart tabs，Tab size选择4，这样tab键就是退四格。
