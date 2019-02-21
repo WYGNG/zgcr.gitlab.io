@@ -68,7 +68,7 @@ C:\Users\zgcr6\Anaconda3\Library\bin
 ```python
 conda create -n tensorflow-gpu-1.12.0 python=3.6.6
 ```
-然后等待安装完成。该命令创建了一个名为tensorflow-gpu的环境，并安装了python3.6.6。创建的环境位置在：C:\Users\zgcr6\Anaconda3\envs。
+然后等待安装完成。该命令创建了一个名为tensorflow-gpu-1.12.0的环境，并安装了python3.6.6。创建的环境位置在：C:\Users\zgcr6\Anaconda3\envs。
 然后我们将下面这两个目录添加到用户变量中，注意要放到anaconda的目录之前：
 C:\Users\zgcr6\Anaconda3\envs\tensorflow-gpu-1.12.0
 C:\Users\zgcr6\Anaconda3\envs\tensorflow-gpu-1.12.0\Scripts
@@ -89,9 +89,32 @@ sess = tf.Session()
 sess.run(hello)
 ```
 当输入到第三句sess = tf.Session()时，即开始调用显卡。注意如果是第一次在系统中使用tensorflow来调用显卡时，在adding visible gpu devices:0这里会卡住3-5分钟，之后如果能够继续运行并正常输出hello world，则说明安装成功。
-# 如何使用我们安装的tensorflow-gpu1.12.0环境
-## 在cmd中使用tensorflow-gpu环境
+## PyTorch-gpu的安装过程
+我们还可以再创建一个PyTorch-gpu的环境。由于前面安装了CUDA10，我们选择安装PyTorch-gpu1.0。
+首先打开anaconda prompt，使用命令：
+```python
+conda create -n pytorch-gpu-1.0 python=3.6.6
+```
+然后等待安装完成。该命令创建了一个名为pytorch-gpu-1.0的环境，并安装了python3.6.6。创建的环境位置在：C:\Users\zgcr6\Anaconda3\envs。
+然后我们将下面这两个目录添加到用户变量中，注意要放到anaconda的目录之前：
+C:\Users\zgcr6\Anaconda3\envs\pytorch-gpu-1.0
+C:\Users\zgcr6\Anaconda3\envs\pytorch-gpu-1.0\Scripts
+然后我们去PyTorch官网下载对应版本的PyTorch安装包。网址：https://pytorch.org/resources 。选择stable(1.0)、windows、pip、Python3.6、CUDA10.0，得到下面的安装命令：
+```
+pip install https://download.pytorch.org/whl/cu100/torch-1.0.1-cp36-cp36m-win_amd64.whl
+pip install torchvision
+```
+我们打开cmd窗口，cd到C:\Users\zgcr6\Anaconda3\envs\pytorch-gpu-1.0目录，运行上面两条命令安装即可(如下载速度慢可先打开代理)。
+安装完成后，我们要验证一下安装是否成功。在cmd窗口中输入python，然后依次输入下列命令：
+```
+import torch
+print(torch.cuda.is_available())
+```
+如果输出为True，则说明我们的安装成功了。
+# 如何使用我们安装的tensorflow-gpu1.12.0/pytorch-gpu-1.0环境
+## 在cmd中使用tensorflow-gpu/pytorch-gpu环境
 将tensorflow-gpu-1.12.0环境的路径加入到用户环境变量中，即路径C:\Users\zgcr6\Anaconda3\envs\tensorflow-gpu-1.12.0，注意这个路径一定要放在我们刚才添加的路径C:\Users\zgcr6\Anaconda3之前。
 此时打开cmd后，输入python运行的就是C:\ProgramData\Anaconda3\envs\tensorflow-gpu文件中的python.exe。
-## 在编译器(如pycharm)中使用tensorflow-gpu1.12.0环境
-我们以pycharm为例，在pycharm中找到项目的解释器设置(file->settings->project interpreter)，将解释器路径设为我们的C:\Users\zgcr6\Anaconda3\envs\tensorflow-gpu-1.12.0\python.exe即可。
+如果要使用pytorch-gpu-1.0环境其操作也类似，只要将上面的环境变量中pytorch-gpu-1.0目录放在tensorflow-gpu-1.12.0目录之前即可。
+## 在编译器(如pycharm)中使用tensorflow-gpu/pytorch-gpu环境
+我们以pycharm为例，在pycharm中找到项目的解释器设置(file->settings->project interpreter)，将解释器路径设为我们的C:\Users\zgcr6\Anaconda3\envs\tensorflow-gpu-1.12.0\python.exe或C:\Users\zgcr6\Anaconda3\envs\pytorch-gpu-1.0\python.exe即可。
