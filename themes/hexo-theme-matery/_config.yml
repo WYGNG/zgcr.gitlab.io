@@ -262,7 +262,7 @@ valine:
 githubLink:
   enable: true
   url: https://github.com/zgcr
-  title: Fork Me
+  title: 快来我的Github看看吧!
 
 # The password verification feature of read post. To use this feature,
 # activate the configuration item and write the 'password' key and Cipher in the post's Front-matter.
