@@ -6,15 +6,13 @@ pages:
     - node_modules/
 
   script:
-  - npm cache clean --force && npm cache verify
   - npm install hexo-cli -g
-  - npm install
+  - npm install -g create-next-app@0.6.4
   - npm i -S hexo-prism-plugin
   - npm install hexo-generator-search --save
   - npm i --save hexo-wordcount
   - npm i hexo-permalink-pinyin --save
   - hexo clean
-  - hexo generate
   - hexo deploy
   artifacts:
     paths:
