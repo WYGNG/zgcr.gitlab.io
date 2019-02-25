@@ -1,4 +1,4 @@
-image: node:8.11.2
+image: node:10.15.0
 
 pages:
   cache:
@@ -6,6 +6,7 @@ pages:
     - node_modules/
 
   script:
+  - npm i npm@latest -g
   - npm install hexo-cli -g
   - npm install
   - npm i -S hexo-prism-plugin
