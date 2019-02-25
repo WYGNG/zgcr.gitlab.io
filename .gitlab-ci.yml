@@ -1,4 +1,4 @@
-image: node:10.15.0
+image: node:8.11.2
 
 pages:
   cache:
@@ -6,8 +6,8 @@ pages:
     - node_modules/
 
   script:
-  - npm install --save npm@latest -g
   - npm install hexo-cli -g
+  - npm install
   - npm i -S hexo-prism-plugin
   - npm install hexo-generator-search --save
   - npm i --save hexo-wordcount

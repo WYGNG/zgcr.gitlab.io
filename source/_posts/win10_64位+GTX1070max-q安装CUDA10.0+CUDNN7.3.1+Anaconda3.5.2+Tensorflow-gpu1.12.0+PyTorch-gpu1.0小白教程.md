@@ -1,5 +1,5 @@
 ---
-title: win10_64位+GTX1070max-q安装CUDA10.0+CUDNN7.3.1+Anaconda3.5.2+Tensorflow_gpu1.12.0小白教程
+title: win10_64位+GTX1070max-q安装CUDA10.0+CUDNN7.3.1+Anaconda3.5.2+Tensorflow-gpu1.12.0+PyTorch-gpu1.0小白教程
 date: 2019-02-21 16:06:47
 tags:
 - 各种环境搭建
@@ -34,9 +34,11 @@ Anaconda3.5.2可在官网上下载，tensorflow-gpu使用pip安装即可，即�
 python -m pip install tensorflow-gpu==1.12.0
 ```
 我已经尝试过上面这种组合，在重装系统后仅安装了自带的NVIDIA389.21驱动后安装上述组合，tensorflow-gpu可以正常调用显卡进行计算。注意安装CUDA时提示显卡新于CUDA工具包，此时选择自定义安装，只勾选CUDA项安装即可。
-# 10系显卡安装CUDA10+CUDNN7.3.1+Anaconda3.5.2+tensorflow-gpu1.12.0魔改版
+# 10系显卡安装CUDA10+CUDNN7.3.1+Anaconda3.5.2+tensorflow-gpu1.12.0魔改版+PyTorch-gpu1.0
+
 由于tensorflow-gpu最高只支持到CUDA9，而CUDA已经发布了最新的10.0版本，国外有一位大神修改了tensorflow-gpu包使其支持CUDA10.0+CUDNN7.3.1。大神的Github仓库地址为：https://github.com/fo40225/tensorflow-windows-wheel 。
 要想下载这个魔改的tensorflow-gpu1.12.0的话，地址为：https://github.com/fo40225/tensorflow-windows-wheel/tree/master/1.12.0/py36/GPU/cuda100cudnn73avx2 。
+
 ## 安装特定版本NVIDIA显卡驱动
 注意CUDA10.0版本需要NVIDIA 411.31及之后版本的驱动才能正常工作，我们需要先安装符合版本要求的驱动。NVIDIA驱动下载地址：https://www.nvidia.cn/Download/Find.aspx?lang=cn 。
 这里我们选择下载411.63驱动，安装。安装时选择自定义安装，全部勾选。
