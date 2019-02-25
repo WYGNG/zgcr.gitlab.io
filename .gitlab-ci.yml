@@ -6,6 +6,7 @@ pages:
     - node_modules/
 
   script:
+  - npm cache clean --force && npm cache verify
   - npm install hexo-cli -g
   - npm install
   - npm i -S hexo-prism-plugin
