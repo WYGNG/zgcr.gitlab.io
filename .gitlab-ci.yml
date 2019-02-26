@@ -1,4 +1,4 @@
-image: node:8.11.2
+image: node:10.15.0
 
 pages:
   cache:
