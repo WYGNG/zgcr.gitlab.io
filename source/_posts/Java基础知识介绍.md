@@ -15,7 +15,7 @@ JRE：JVM、Runtime Library。
 # Java hello world
 Java编译运行的过程：源代码(hello.java)->字节码(hello.class)->在JVM运行。
 使用IDEA创建一个project，然后在src文件夹下新建一个Java class，命名为Hello。
-```Java
+```java
 public class Hello { 
 	public static void main(String[] args) { 
 		System.out.println("hello world!"); 
@@ -25,7 +25,7 @@ public class Hello {
 我们建立的.java文件的名称要与代码中的public类名完全一致。public static void main(String[] args)是主方法，类似C语言中的main()。String[]代表程序可以接收字符串数组作为参数，args是arguments的缩写，是参数的名字。
 我们可以直接Ctrl+shift+F10在IDEA中编译运行该.java文件，也可以在cmd中输入javac Hello.java再输入java Hello来编译并运行（cmd中目录要先cd到Hello.java文件所在的目录）
 # Java程序基本结构
-```Java
+```java
 public class 类名{
 	public static void 方法名（参数）{
 		......
@@ -56,20 +56,20 @@ public表示该类是公类，不写的话也能编译，但无法从命令行�
 三元运算符 b ? x : y：如果b为true，计算x并返回值，否则计算y并返回值。
 # Java输入/输出/if...else判断/打印数组/数组排序/查看函数方法源码/命令行参数String[] args
 输入要引入java.util.Scanner包。
-```Java
+```java
 import java.util.Scanner
 Scanner s = new Scanner(System.in); # 创建一个Scanner对象，控制台会一直等待输入，直到敲回车键结束，把所输入的内容传给Scanner，作为扫描对象。要获取输入的内容，则只需要调用Scanner的nextLine()或nextInt()或nextdouble()等方法。
 String name=s.nextLine(); # 读取一个字符串输入，直到回车换行
 int age=s.nextInt(); # 或者读取一个int型整数
 ```
 输出方法：
-```Java
+```java
 System.out.println(); # 输出并换行
 System.out.print(); # 输出但不换行
 System.out.printf(); # 格式化输出
 ```
 if...else判断格式和C/C++中相同。如：
-```Java
+```java
 import java.util.Scanner; 
 
 public class test {  
@@ -91,7 +91,7 @@ public class test {
 * Java中的swtich语句、while循环、do while循环、for循环、break语句、continue语句均与C语言中类似。
 
 Java中打印数组：由于数组变量是引用类型，直接打印数组变量得到的是变量名的地址，要打印数组元素，我们可以用for循环或使用Arrays.toString()方法。
-```Java
+```java
 import java.util.Arrays; 
 
 public class test {  
@@ -103,7 +103,7 @@ public class test {
 }
 ```
 Java中数组排序，以冒泡排序为例：
-```Java
+```java
 import java.util.Arrays; 
 
 public class test {  
@@ -123,7 +123,7 @@ public class test {
 }
 ```
 我们还可以使用Arrays.sort()方法对数组排序，该方法对于元素多的数组进行快速排序，对于元素少的数组进行冒泡排序。
-```Java
+```java
 import java.util.Arrays; 
 
 public class test {  
@@ -137,7 +137,7 @@ public class test {
 如何查看函数方法源码：在eclipse/IDEA中，按住CTRL键，点击方法名如sort，就可以查看其方法的源码。
 命令行参数String[] args：是一个String[]数组，args为数组变量名，我们可以向这个数组中传入任意数量的参数变量名。命令行参数由JVM虚拟机接收用户的输入并传给Main()方法。
 如：我们可以在cmd中javac 文件名.java编译某个.java文件，然后输入java 文件名 -s -t -version。-s -t -version均为传入的参数。检测这些传入的参数变量名，在Main函数中可设置if判断来执行一些操作。
-```Java
+```java
 public class test {  
 	public static void main(String[] args) {  
 		System.out.println(args.length);  
@@ -213,7 +213,7 @@ JVM在读取了某个完整类名后，按下面的顺序来寻找类：
 * 在某个目录下找到则不往后继续寻找；
 * 如果都没有找到，则报错；
 * 我们可以在系统环境变量中设置classpath环境变量（不推荐），或者在启动JVM时设置classpath变量（推荐），如：
-```Java
+```java
 java -cp 绝对路径 完整类名
 ```
 jar包：jar包是zip格式的压缩文件，包含若干.class文件。jar包相当于目录。jar包还可以包含其他jar包。classpath中可以包含jar文件。
@@ -256,20 +256,20 @@ JavaBean：
 反射：
 * Java除基本类型外其他都是class类型(包括interface)。JVM为每个加载的class创建对应的Class实例，并在实例中保存该class的所有信息。如果获取了某个Class实例，则可以获取到该实例对应的class的所有信息。通过Class实例获取class信息的方法称为反射。
 * 如何获取一个class的Class的实例？
-```Java
+```java
 Type.class;
 getClass();
 Class.forName();
 ```
 * Class实例在JVM中是唯一的。我们可以用==比较两个Class实例。注意这种比较和instance of比较不同。Class实例比较只匹配当前类型，instanceof比较不但匹配当前类型，还匹配当前类型的子类。
 * 从Class实例可以获取下列class信息：
-```Java
+```java
 getName(); # 得完整类名
 getSimpleName(); # 获得类名
 getPackage(); # 获得包名
 ```
 * 从Class实例还可以判断class类型：
-```Java
+```java
 isInterface();
 isEnum();
 isArray();
@@ -278,7 +278,7 @@ isPrimitive(); # 判断是不是一个基本类型
 注解：
 * 注解（Annotation）是放在Java源码的类、方法、字段、参数前的一种标签。注解本身对代码逻辑没有任何影响，如何使用注解由工具决定。
 * 编译器可以使用的注解：
-```Java
+```java
 @Override：让编译器检查该方法是否正确实现覆写；
 @Deprecated：告诉编译器该方法已经被标记为“作废”，其他地方引用将会出现编译警告；
 @SuppressWarnings。
@@ -286,7 +286,7 @@ isPrimitive(); # 判断是不是一个基本类型
 * 注解可以定义配置参数：配置参数由注解类型定义；配置参数可以包括：所有基本类型、String、枚举类型、数组；配置参数必须是常量。使用注解时，缺少某个配置参数将使用默认值；如果只写常量，相当于省略了value参数；如果只写注解，相当于全部使用默认值。
 * 使用@interface可以定义注解：注解的参数类似无参数方法；可以设定一个默认值（推荐）；建议把最常用的参数命名为value（推荐）。
 * 使用@Target定义注解可以被应用于源码的哪些位置：
-```Java
+```java
 类或接口：ElementType.TYPE
 字段：ElementType.FIELD
 方法：ElementType.METHOD
@@ -294,7 +294,7 @@ isPrimitive(); # 判断是不是一个基本类型
 方法参数：ElementType.PARAMETER
 ```
 * 使用@Retention定义注解的声明周期：
-```Java
+```java
 仅编译器：RetentionPolicy.SOURCE # 此时Annotation在编译器编译时直接丢弃
 仅class文件：RetentionPolicy.CLASS # 此Annotation仅存储在class文件中
 仅运行期：RetentionPolicy.RUNTIME # 在运行期间可以读取该Annotation
