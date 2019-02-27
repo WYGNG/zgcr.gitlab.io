@@ -83,8 +83,10 @@ theme: hexo-theme-matery
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
-deploy:
-  type:
+deploy: 
+  type: git
+  repo: git@github.com:zgcr/zgcr.github.io.git
+  branch: master
 
 search:
   path: search.xml
