@@ -166,19 +166,19 @@ git push -u origin master
 
 然后按照上面部署hexo博客的步骤push即可。注意push前先在github上添加你的ssh-key。
 
-## 在Gitlab和Github上同时部署hexo博客(两个独立站点，内容完全一样)
+## 在Github上部署hexo博客
 
-我们还可以尝试同时在Gitlab和Github上部署hexo博客。在本地hexo博客源码目录鼠标右键选择Git bash here，然后运行下面的命令，安装用于部署hexo博客到Github上的插件：
+我将部署到Gitlab的hexo博客源码目录命名为hexo_blog_gitlab，现在将这个目录中的博客源码copy一份到一个新目录，比如我将新目录命名为：hexo_blog_github。在新目录hexo_blog_github下鼠标右键选择Git bash here，然后运行下面的命令，安装用于部署hexo博客到Github上的插件：
 
 ```
 npm install hexo-deployer-git --save
 ```
 
-这是在Github上部署hexo博客时必须使用的插件。由于Gitlab上部署hexo博客采用CI方式自动部署，因此只在Gitlab上部署hexo博客时不需要安装这个插件。.gitlab-ci.yml文件中不需要加入这条命令。
+这是在Github上部署hexo博客时必须使用的插件。
 
 在Github网站新建一个公开仓库，名为yourname.github.io，然后勾选Initialize this repository with a README，创建仓库，打开该仓库的settings，如果出现提示：Your site is published at https://zgcr.github.io/ ,则说明Github pages开启成功。
 
-然后打开hexo博客源码目录下的_config.yml文件，修改相应代码块为以下内容：
+修改新目录hexo_blog_github中的_config.yml文件(注意不是主题中的config.yml文件)，修改相应代码块为以下内容：
 
 ```
 # Deployment
@@ -199,7 +199,7 @@ hexo d
 
 此时可以正常将hexo博客部署到github上了。
 
-要想将博客部署要gitlab上，只需按原有步骤使用下面命令：
+要想将博客部署要gitlab上，只需在原目录hexo_blog_gitlab中鼠标右键选择Git bash here，使用下面命令：
 
 ```
 git add -A
@@ -208,6 +208,10 @@ git push origin master
 ```
 
 即可部署hexo博客至Gitlab上。
+
+**关于Gitlab/Github的博客同步：**
+
+目前没有太好的方法，我们每次写新文章可在hexo_blog_gitlab目录中的\_post目录下新建和修改文章，完成后将\_post目录复制粘贴到hexo_blog_github目录中相同位置，然后分别部署hexo博客到Gitlab和Github即可。
 
 # 总结
 
