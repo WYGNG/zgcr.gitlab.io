@@ -7,14 +7,13 @@ categories:
 - 博客搭建
 ---
 
-
 # Github pages部署hexo博客的缺点
 
-使用Github+hexo搭建个人博客非常简单方便，但是github目前不允许百度蜘蛛的爬取，因此，如果我们希望自己用Github pages+hexo搭建的个人博客能被百度收录，就需要采用其他的方法。网上也有一些利用coding.net进行托管让百度爬取的方法，但是现在coding.net在打开托管的个人pages时会强行加入一个5s的等待跳转页面，这会导致百度的蜘蛛无法正确爬取到博客的内容。
+使用Github pages+hexo搭建个人博客非常简单方便，但是github目前不允许百度蜘蛛的爬取，因此，如果我们希望自己用Github pages+hexo搭建的个人博客能被百度收录，就需要采用其他的方法。网上也有一些利用coding.net进行托管让百度爬取的方法，但是现在coding.net在打开托管的个人pages时会强行加入一个5s的等待跳转页面，这会导致百度的蜘蛛无法正确爬取到博客的内容。
 
-现在我们有了一个更好的选择：使用Gitlab+hexo搭建个人博客。Gitlab搭建的个人博客可以被百度正常收录，另外，在Gitlab上部署hexo博客时需要在Gitlab服务器端完成生成静态网页和部署两个阶段，而Github是在本地生成静态网页的。
+现在我们有了一个更好的选择：使用Gitlab pages+hexo搭建个人博客。Gitlab pages搭建的个人博客可以被百度正常收录，另外，在Gitlab上部署hexo博客时需要在Gitlab服务器端完成生成静态网页和部署两个阶段，而Github pages是在本地生成静态网页的。
 
-具体来说，我们将Hexo博客源码的代码提交到Gitlab，并利用Gitlab服务器的CI/CD功能发布到Gitlab博客，从而实现可以通过 https://username.gitlab.io/projectname 或者 https://username.gitlab.io 访问个人博客。
+具体来说，我们将Hexo博客源码的代码提交到Gitlab，并利用Gitlab服务器的CI/CD功能发布到Gitlab Pages，从而实现可以通过 https://username.gitlab.io/projectname 或者 https://username.gitlab.io 访问个人博客。
 
 # 安装和配置环境
 
@@ -22,17 +21,11 @@ categories:
 
 ## 安装Git
 
-从Git官网下载Git软件，按默认选项安装即可。
+从Git官网地址：https://www.git-scm.com/download/ 下载Git软件，按默认选项安装即可。
 
 ## 安装Node.js
 
-从node.js官网下载Node.js软件，推荐下载稳定版本，然后按默认选项安装即可。安装完成后，打开cmd.exe，输入：
-
-```
-node -v
-```
-
-若能正常显示版本号，则说明安装成功。
+从node.js官网：https://nodejs.org/en/ 下载Node.js软件，推荐下载稳定版本，然后按默认选项安装即可。安装完成后，打开cmd.exe，输入node -v，若能正常显示版本号，则说明安装成功。
 
 ## 安装Hexo、预览本地hexo博客
 
@@ -52,12 +45,11 @@ hexo s 或 hexo server #启动本地服务器,可预览本地hexo博客
 如果你使用的是Microsoft Edge浏览器，访问http://localhost:4000/ 时可能会失败，原因是这个浏览器经常偷偷地自动打开使用代理服务器127.0.0.1。关闭后即可正常访问。还有一种可能是你的4000端口被占用了。
 
 # 将hexo博客部署到Gitlab pages上
-
 ## 创建Gitlab pages仓库
 
 首先在Gitlab上注册一个账号，或者直接用Github账号登录也可以。
 
-Gitlab支持project page和user page两种page，只需要创建对应的仓库即可。如果你要创建一个project page，假设project name为blog，那么你的project URL为：https://gitlab.com/username/blog/ 。一旦这个project启用了GitLab pages，并构建了站点，站点访问url为：https://uesrname.gitlab.io/blog  。如果你要创建一个user page，假设此时project name为john.gitlab.io(john为你的Gitlab账号名)，则你的project URL为：https://gitlab.com/john/john.gitlab.io 。一旦这个project启用了GitLab pages，并构建了站点，站点访问url为：https://john.gitlab.io 。
+Gitlab支持project page和user page两种page，只需要创建对应的仓库即可。如果你要创建一个project page，假设project name为blog，那么你的project URL为：https://gitlab.com/username/blog/ 。一旦这个project启用了GitLab pages，并构建了站点，站点访问url为：https://uesrname.gitlab.io/blog/ 。如果你要创建一个user page，假设此时project name为john.gitlab.io(john为你的Gitlab账号名)，则你的project URL为：https://gitlab.com/john/john.gitlab.io 。一旦这个project启用了GitLab pages，并构建了站点，站点访问url为：https://john.gitlab.io 。
 
 这里我们新建一个名为username.gitlab.io的仓库，username就是你的Gitlab账户名。
 
@@ -83,11 +75,11 @@ git config --global user.email "your_email"
 ssh-keygen -t rsa -C "your_email@your_email.com #生成新的key文件,邮箱地址填你的Github地址
 ```
 
-然后按三次enter生成一个新的SSH-key。打开id_rsa.pub文件，将里面的所有内容添加到上面Gitlab账号settings中的SSH-key中。
+然后按三次enter生成一个新的SSH key。打开id_rsa.pub文件，将里面的所有内容添加到上面Gitlab账号settings中的SSH key中。
 
 ## hexo博客源码目录下添加.gitlab-ci.yml文件
 
-使用Gitlab部署hexo博客和Github pages不同。在Github上部署博客，需要先在本地生成各种静态网页和文件，然后再推送到Github-pages仓库上就可以直接访问了。使用Gitlab需要在服务器端完成生成和部署两个阶段，需要在本地的hexo博客源码目录下添加一个.gitlab-ci.yml文件用来指导服务器如何处理你提交的源文件。
+使用Gitlab pages部署hexo博客和Github pages不同。在Github pages上部署博客，需要先在本地生成各种静态网页和文件，然后再推送到Github pages仓库上就可以直接访问了。使用Gitlab需要在服务器端完成生成和部署两个阶段，需要在本地的hexo博客源码目录下添加一个.gitlab-ci.yml文件用来指导服务器如何处理你提交的源文件。
 
 最新的.gitlab-ci.yml文件官方版本可以从这个仓库中获取：https://gitlab.com/pages/hexo/blob/master/.gitlab-ci.yml 。
 
@@ -132,89 +124,66 @@ git push -u origin master
 
 上传后，然后Gitlab服务器会自动检查.gitlab-ci.yml脚本是否有效，校验通过后，会自动开始执行脚本。
 
-点击左侧菜单中的CI/CD->pipeline可以查看脚本的执行情况，当脚本的Stages状态变为test:passed&&deploy: passed时，说明构建完成。此时已可以访问我们的个人博客站点：https://username.gitlab.io 。有时构建完成时马上访问可能会出现404页面，这种情况很多人遇到过，这里是该问题的讨论：https://forum.gitlab.com/t/gitlab-pages-404-for-even-the-simplest-setup/5870 。其实这是因为Gitlab的服务器构建速度比较慢，等5-10分钟再重新访问页面就正常了。
+点击左侧菜单中的CI/CD->pipeline可以查看脚本的执行情况，当脚本的Stages状态变为test:passed && deploy: passed时，说明构建完成。此时已可以访问我们的个人博客站点：https://username.gitlab.io 。有时构建完成时马上访问可能会出现404页面，这种情况很多人遇到过，这里是该问题的讨论：https://forum.gitlab.com/t/gitlab-pages-404-for-even-the-simplest-setup/5870 。其实这是因为Gitlab的服务器构建速度比较慢，等5-10分钟再重新访问页面就正常了。
 
 ## Gitlab pages博客站点绑定个人域名
 
 此时我们要访问这个博客只能通过默认域名：https://username.gitlab.io 来访问，我们可以自己购买一个个人域名，然后将个人域名解析到默认域名上，这样就可以通过个人域名来访问这个博客。
 
-域名购买可以在阿里云购买，购买后我们先点击控制台->域名->管理->免费开启ssl证书，申请ssl证书后，点击下载，选择其他，下载证书。然后打开我们的Gitlab pages仓库，选择左侧面板settings->pages，找到new domain。Domain项填入我们的个人域名，certificate和key分别复制我们下载下来的证书文件内容填入，然后点击create new domain。
+域名购买可以在阿里云购买，购买后我们先点击控制台->域名->管理->免费开启ssl证书，申请ssl证书后，点击下载，选择其他，下载证书。然后打开我们的Gitlab pages仓库，选择左侧面板settings->pages->new domain。Domain项填入我们的个人域名，certificate和key分别复制我们下载下来的证书文件内容填入，然后点击create new domain。
 
-随后提示：This domain is not verified. You will need to verify ownership before access is enabled. 我们再打开阿里云的域名控制台，选择->域名->解析来设置一个用来验证域名的DNS解析，具体要求可以看域名的detail页面中的verify ownership链接中的说明。
+随后提示：This domain is not verified. You will need to verify ownership before access is enabled. 我们再打开阿里云的域名控制台，选择->域名->解析来设置一个用来验证域名的DNS解析：记录类型选择TXT，主机记录的域名前缀和我们domain项填的域名的前缀一致，记录值为Gitlab pages domain页面中的Verification status项中从gitlab-pages-verification-code=之后的字符串。然后点击retry vertification，成功后显示vertified。
 
-然后我们打开阿里云控制台->域名->域名解析，添加个人域名指向我们的Gitlab博客站点的默认域名:https://username.gitlab.io 的主机记录。添加一条主机记录，前缀www，记录类型选择CNAME，记录值填写默认域名：username.gitlab.io 。TTL最短10分钟，也就是10分钟后域名解析生效。生效后我们就可以使用个人域名来访问这个博客了。
+然后我们打开阿里云控制台->域名->域名解析，添加个人域名指向我们的Gitlab Pages博客站点的默认域名:https://username.gitlab.io 的主机记录。一般我们添加两条主机记录，分别是前缀www和前缀@，记录类型选择CNAME，记录值填写默认域名：username.gitlab.io 。TTL最短10分钟，也就是10分钟后域名解析生效。生效后我们就可以使用个人域名来访问这个博客了。
 
 # 多渠道同时部署hexo博客
-
 ## Gitlab Mirror:git push同时将博客代码push到gitlab和github(将push到Gitlab上源码也push到Github上作为备份)
-
 我们还可以修改git push的配置，将代码同时push到gitlab和github上对应的仓库中。打开hexo博客源码目录/.git/config文件，找到下面的代码块：
-
 ```
 [remote "origin"]
  url = git@gitlab.com:yourname/yourname.gitlab.io.git
  fetch = +refs/heads/*:refs/remotes/origin/*
-
 ```
-
 在url这行下面加上新的一行其他远程库的路径，如：
-
 ```
- url = git@github.com:yourname/yourname.git
-
+url = git@github.com:yourname/yourname.git
 ```
-
 然后按照上面部署hexo博客的步骤push即可。注意push前先在github上添加你的ssh-key。
-
 ## 在Github上部署hexo博客
-
 我将部署到Gitlab的hexo博客源码目录命名为hexo_blog_gitlab，现在将这个目录中的博客源码copy一份到一个新目录，比如我将新目录命名为：hexo_blog_github。在新目录hexo_blog_github下鼠标右键选择Git bash here，然后运行下面的命令，安装用于部署hexo博客到Github上的插件：
-
 ```
 npm install hexo-deployer-git --save
 ```
-
 这是在Github上部署hexo博客时必须使用的插件。
-
 在Github网站新建一个公开仓库，名为yourname.github.io，然后勾选Initialize this repository with a README，创建仓库，打开该仓库的settings，如果出现提示：Your site is published at https://zgcr.github.io/ ,则说明Github pages开启成功。
-
 修改新目录hexo_blog_github中的_config.yml文件(注意不是主题中的config.yml文件)，修改相应代码块为以下内容：
-
 ```
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy: 
   type: git
-  repo: git@github.com:zgcr/zgcr.github.io.git
+  repo: git@github.com:yourname/yourname.github.io.git
   branch: master
 ```
-
 请把上面的repo内容换成你的Github pags仓库的git链接。完成后，使用下面命令：
-
 ```
 hexo clean
 hexo g
 hexo d
 ```
-
 此时可以正常将hexo博客部署到github上了。
-
 要想将博客部署要gitlab上，只需在原目录hexo_blog_gitlab中鼠标右键选择Git bash here，使用下面命令：
-
 ```
 git add -A
 git commit -m "本次提交描述"
 git push origin master
 ```
-
 即可部署hexo博客至Gitlab上。
-
 **关于Gitlab/Github的博客同步：**
-
-目前没有太好的方法，我们每次写新文章可在hexo_blog_gitlab目录中的\_post目录下新建和修改文章，完成后将\_post目录复制粘贴到hexo_blog_github目录中相同位置，然后分别部署hexo博客到Gitlab和Github即可。
+目前没有太好的方法，我们每次写新文章可在hexo_blog_gitlab目录中的_post目录下新建和修改文章，完成后将_post目录复制粘贴到hexo_blog_github目录中相同位置，然后分别部署hexo博客到Gitlab和Github即可。
 
 # 总结
 
-使用Gitlab部署hexo博客时，我们不需要在本地使用hexo generate命令生成博客静态网页，再push到Gitlab仓库，而是直接push了hexo博客的源码到Gitlab仓库，同时增加一个.gitlab-ci.yml文件作为CI/CD脚本，通过该文件在Gitlab服务器生成博客的静态网页，然后自动发布到Gitlab博客站点上。
+使用Gitlab pages部署hexo博客时，我们不需要在本地使用hexo generate命令生成博客静态网页，再push到Gitlab pages仓库，而是直接push了hexo博客的源码到Gitlab pages仓库，同时增加一个.gitlab-ci.yml文件作为CI/CD脚本，通过该文件在Gitlab服务器生成博客的静态网页，然后自动发布到Gitlab pages博客站点上。
 
-当我们要在博客上写新文章时，只需把Gitlab仓库中的源码pull下来，然后使用hexo新建文章，使用markdown编辑器(如typora)编辑文章，完成后将源码再push到Gitlab仓库中即可，Gitlab服务器会根据.gitlab-ci.yml文件重新生成博客的静态网页，然后自动发布到Gitlab博客站点上。我们可以点击CD/CI configuration让Gitlab服务器自动检测.gitlab-ci.yml文件，若文件正确则自动运行和发布博客。
+当我们要在博客上写新文章时，只需把Gitlab pages仓库中的源码pull下来，然后使用hexo新建文章，使用markdown编辑器(如typora)编辑文章，完成后将源码再push到Gitlab pages仓库中即可，Gitlab服务器会根据.gitlab-ci.yml文件重新生成博客的静态网页，然后自动发布到Gitlab pages博客站点上。我们可以点击CD/CI configuration让Gitlab服务器自动检测.gitlab-ci.yml文件，若文件正确则自动运行和发布；也可以在Gitlab左侧菜单CI/CD->Schedules中添加new schedule，这样Gitlab服务器会定时重新运行.gitlab-ci.yml文件来重新发布博客。
