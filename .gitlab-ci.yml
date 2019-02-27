@@ -6,6 +6,8 @@ pages:
     - node_modules/
 
   script:
+  - git config --global user.name "zgcr"
+  - git config --global user.email "zgcr@mail.ustc.edu.cn"
   - npm install hexo-cli -g
   - npm install
   - npm i -S hexo-prism-plugin

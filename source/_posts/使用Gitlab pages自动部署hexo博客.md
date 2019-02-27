@@ -176,6 +176,8 @@ npm install hexo-deployer-git --save
 
 这是在Github/coding上部署博客时必须使用的插件。由于Gitlab上部署hexo博客采用CI方式自动部署，因此只在Gitlab上部署hexo博客时不需要安装这个插件。
 
+我们还要在Gitlab和Github网站上，将你的账号名设置为同样的账号名，邮箱也设置为同样的邮箱，并且注意要让邮箱公开(如果隐藏在提交时需要自行设置user.name和user.email)，因为git提交时是按照你的git设置的user.name和user.email来识别提交人是否就是账号所有人。
+
 在Github网站新建一个公开仓库，名为yourname.github.io，然后勾选Initialize this repository with a README，创建仓库，打开该仓库的settings，如果出现提示：Your site is published at https://zgcr.github.io/ ,则说明Github pages开启成功。
 
 然后打开hexo博客源码目录下的_config.yml文件，修改相应代码块为以下内容：
@@ -207,7 +209,25 @@ git commit -m "本次提交描述"
 git push origin master
 ```
 
-即可部署hexo博客至Gitlab上。
+即可部署hexo博客至Gitlab上。如果提交后在自动部署时出现下面的错误：
+
+```
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'root@runner-fa6cab46-project-10677237-concurrent-0.(none)')
+FATAL Something's wrong. Maybe you can find the solution here: http://hexo.io/docs/troubleshooting.html
+Error: Spawn failed
+    at ChildProcess.<anonymous> (/builds/zgcr/zgcr.gitlab.io/node_modules/hexo-util/lib/spawn.js:52:19)
+    at ChildProcess.emit (events.js:182:13)
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:240:12)
+ERROR: Job failed: exit code 1
+```
 
 # 总结
 
