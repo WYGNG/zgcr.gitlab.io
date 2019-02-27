@@ -1058,20 +1058,3 @@ git pull origin master --allow-unrelated-histories
 
 这样我们就将hexo博客的源码推送到Gitlab pages仓库上了。然后Gitlab服务器会自动检查.gitlab-ci.yml脚本是否有效，校验通过后，会自动开始执行脚本。过5-10分钟执行完成后，我们就可以看到线上的博客更新了。
 
-# Mirror:git push同时将代码push到gitlab和github
-
-我们还可以修改git push的配置，将代码同时push到gitlab和github上对应的仓库中。打开hexo博客源码目录/.git/config文件，找到下面的代码块：
-
-```
-[remote "origin"]
- url = git@gitlab.com:yourname/yourname.gitlab.io.git
- fetch = +refs/heads/*:refs/remotes/origin/*
-```
-
-在url这行下面加上新的一行其他远程库的路径，如：
-
-```
- url = git@github.com:yourname/yourname.git
-```
-
-然后按照上面部署hexo博客的步骤push即可。注意push前先在github上添加你的ssh-key。

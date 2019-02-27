@@ -144,6 +144,71 @@ git push -u origin master
 
 然后我们打开阿里云控制台->域名->域名解析，添加个人域名指向我们的Gitlab博客站点的默认域名:https://username.gitlab.io 的主机记录。添加一条主机记录，前缀www，记录类型选择CNAME，记录值填写默认域名：username.gitlab.io 。TTL最短10分钟，也就是10分钟后域名解析生效。生效后我们就可以使用个人域名来访问这个博客了。
 
+# 多渠道同时部署hexo博客
+
+## Gitlab Mirror:git push同时将博客代码push到gitlab和github(将push到Gitlab上源码也push到Github上作为备份)
+
+我们还可以修改git push的配置，将代码同时push到gitlab和github上对应的仓库中。打开hexo博客源码目录/.git/config文件，找到下面的代码块：
+
+```
+[remote "origin"]
+ url = git@gitlab.com:yourname/yourname.gitlab.io.git
+ fetch = +refs/heads/*:refs/remotes/origin/*
+
+```
+
+在url这行下面加上新的一行其他远程库的路径，如：
+
+```
+ url = git@github.com:yourname/yourname.git
+
+```
+
+然后按照上面部署hexo博客的步骤push即可。注意push前先在github上添加你的ssh-key。
+
+## 在Gitlab和Github上同时部署hexo博客(两个独立站点，内容完全一样)
+
+我们还可以尝试同时在Gitlab和Github上部署hexo博客。在本地hexo博客源码目录鼠标右键选择Git bash here，然后运行命令，安装部署插件：
+
+```
+npm install hexo-deployer-git --save
+```
+
+这是在Github/coding上部署博客时必须使用的插件。由于Gitlab上部署hexo博客采用CI方式自动部署，因此只在Gitlab上部署hexo博客时不需要安装这个插件。
+
+在Github网站新建一个公开仓库，名为yourname.github.io，然后勾选Initialize this repository with a README，创建仓库，打开该仓库的settings，如果出现提示：Your site is published at https://zgcr.github.io/ ,则说明Github pages开启成功。
+
+然后打开hexo博客源码目录下的_config.yml文件，修改相应代码块为以下内容：
+
+```
+# Deployment
+## Docs: https://hexo.io/docs/deployment.html
+deploy: 
+  type: git
+  repo: git@github.com:zgcr/zgcr.github.io.git
+  branch: master
+```
+
+请把上面的repo内容换成你的Github pags仓库的git链接。完成后，使用下面命令：
+
+```
+hexo clean
+hexo g
+hexo d
+```
+
+此时可以正常将hexo博客部署到github上了。
+
+要想将博客部署要gitlab上，只需按原有步骤使用下面命令：
+
+```
+git add -A
+git commit -m "本次提交描述"
+git push origin master
+```
+
+即可部署hexo博客至Gitlab上。
+
 # 总结
 
 使用Gitlab部署hexo博客时，我们不需要在本地使用hexo generate命令生成博客静态网页，再push到Gitlab仓库，而是直接push了hexo博客的源码到Gitlab仓库，同时增加一个.gitlab-ci.yml文件作为CI/CD脚本，通过该文件在Gitlab服务器生成博客的静态网页，然后自动发布到Gitlab博客站点上。
