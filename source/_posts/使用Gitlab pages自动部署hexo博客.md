@@ -168,15 +168,13 @@ git push -u origin master
 
 ## 在Gitlab和Github上同时部署hexo博客(两个独立站点，内容完全一样)
 
-我们还可以尝试同时在Gitlab和Github上部署hexo博客。在本地hexo博客源码目录鼠标右键选择Git bash here，然后运行命令，安装部署插件：
+我们还可以尝试同时在Gitlab和Github上部署hexo博客。在本地hexo博客源码目录鼠标右键选择Git bash here，然后运行下面的命令，安装用于部署hexo博客到Github上的插件：
 
 ```
 npm install hexo-deployer-git --save
 ```
 
-这是在Github/coding上部署博客时必须使用的插件。由于Gitlab上部署hexo博客采用CI方式自动部署，因此只在Gitlab上部署hexo博客时不需要安装这个插件。
-
-我们还要在Gitlab和Github网站上，将你的账号名设置为同样的账号名，邮箱也设置为同样的邮箱，并且注意要让邮箱公开(如果隐藏在提交时需要自行设置user.name和user.email)，因为git提交时是按照你的git设置的user.name和user.email来识别提交人是否就是账号所有人。
+这是在Github上部署hexo博客时必须使用的插件。由于Gitlab上部署hexo博客采用CI方式自动部署，因此只在Gitlab上部署hexo博客时不需要安装这个插件。.gitlab-ci.yml文件中不需要加入这条命令。
 
 在Github网站新建一个公开仓库，名为yourname.github.io，然后勾选Initialize this repository with a README，创建仓库，打开该仓库的settings，如果出现提示：Your site is published at https://zgcr.github.io/ ,则说明Github pages开启成功。
 
