@@ -209,25 +209,7 @@ git commit -m "本次提交描述"
 git push origin master
 ```
 
-即可部署hexo博客至Gitlab上。如果提交后在自动部署时出现下面的错误：
-
-```
-Run
-
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
-
-to set your account's default identity.
-Omit --global to set the identity only in this repository.
-
-fatal: unable to auto-detect email address (got 'root@runner-fa6cab46-project-10677237-concurrent-0.(none)')
-FATAL Something's wrong. Maybe you can find the solution here: http://hexo.io/docs/troubleshooting.html
-Error: Spawn failed
-    at ChildProcess.<anonymous> (/builds/zgcr/zgcr.gitlab.io/node_modules/hexo-util/lib/spawn.js:52:19)
-    at ChildProcess.emit (events.js:182:13)
-    at Process.ChildProcess._handle.onexit (internal/child_process.js:240:12)
-ERROR: Job failed: exit code 1
-```
+即可部署hexo博客至Gitlab上。
 
 # 总结
 

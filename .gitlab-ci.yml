@@ -12,7 +12,6 @@ pages:
   - npm install hexo-generator-search --save
   - npm i --save hexo-wordcount
   - npm i hexo-permalink-pinyin --save
-  - npm install hexo-deployer-git --save
   - hexo clean
   - hexo generate
   - hexo deploy
