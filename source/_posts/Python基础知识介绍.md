@@ -7,8 +7,30 @@ categories:
 - Python
 ---
 
-# Python的输入与输出
+# Python的输入与输出、Python输入EOF判断
 输入采用input()方法。input输入的元素都是以str形式保存的。输出采用print()方法。
+Python中没有代表EOF的字符，因此检测到输入EOF时会直接报错EOFerror。因此我们要采用下面的写法来检测输入到EOF后停止循环输入：
+```python
+while True:
+   try:
+      s = int(input())
+      print(s)
+   except:
+      print('input complete')
+      break
+```
+如果在cmd.exe中运行这段代码，输入Ctrl+Z即可停止输入。如果是在Pycharm内建运行框中运行这段代码，输入Ctrl+D即可停止输入。
+如果是在Python中读取文件，Python到读取到文件结尾后是返回空字符串的，所以python可以这样判断：
+```python
+str = ''
+with open('readme.txt', 'r', encoding='utf-8') as fp:
+   while True:
+      s = fp.read(10)
+      if s == '':
+         break
+      str += s
+print(str)
+```
 # Python字符串类型、空值类型、Unicode编码、UTF-8编码、格式化字符串
 字符串是以单引号'或双引号"括起来的任意文本。如果字符串内部既包含'又包含"，可以用转义字符\来标识。\n表示换行，\t表示制表符，\\表示\。Python还允许用r' '表示' '内部的字符串默认不转义。
 空值是Python里一个特殊的值，用None表示。None不能理解为0，因为0是有意义的，而None是一个特殊的空值。

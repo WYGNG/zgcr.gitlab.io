@@ -31,6 +31,24 @@ void fun1(int *a) { // 定义fun1函数
    (*a)++;
 }
 ```
+# C/C++输入EOF判断
+EOF是一个定义在C语言头文件stdio.h中的常量,等于-1。当我们不确定输入的数据数量时，常用输入EOF来判断输入是否结束。如：
+```cpp
+#include <cstdio>
+#include <iostream>
+
+int main() {
+   int data;
+   while (scanf("%d", &data) != EOF) { // 输入EOF后循环输入停止
+      printf("%d", data);
+   }
+   return 0;
+}
+```
+**如何用键盘输入EOF：**
+* windows系统中，如果在cmd.exe中运行C/C++程序，想手动输入EOF，在输入数据结束后先enter换行，然后Ctrl+Z，然后再enter换行。
+* linux系统中，如果在terminal中运行C/C++程序，想在输入数据结束后手动输入EOF，也是在输入结束后先enter换行，然后输入Ctrl+D，然后再enter换行。
+* Clion中，想在Clion的内建运行框run中实现输入数据结束后手动输入EOF，在输入结束后，先enter换行，然后Ctrl+D即可。一定要先enter换行，否则输出会不完整！(注意我的Clion使用cygwin编译器)
 # C++中使用C语言头文件
 C语言中的头文件都是带.h后缀的，如果想在C++中使用C语言中头文件，只需要将.h后缀去掉，再在头文件名前加一个c即可。
 用法举例：
@@ -446,6 +464,7 @@ int main() {
 * 如果最前面不是数字，会直接报错。
 
 **stod遇到非法输入时的情况：**
+
 * 自动截取最前面的浮点数，直到遇到不满足浮点数为止；
 * 如果最前面不是数字或小数点，会直接报错；
 * 如果最前面时小数点，会自动转换后在前面补0。
