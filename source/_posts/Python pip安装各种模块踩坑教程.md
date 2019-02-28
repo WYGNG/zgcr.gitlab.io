@@ -2,7 +2,6 @@
 title: Python pip安装模块各种踩坑教程
 date: 2019-02-26 20:06:21
 tags:
-- Python
 - 各种环境搭建
 categories:
 - 各种环境搭建
