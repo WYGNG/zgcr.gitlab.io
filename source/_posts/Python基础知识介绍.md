@@ -355,7 +355,7 @@ print(isinstance([1, 2, 3], (list, tuple)))
 print(isinstance((1, 2, 3), (list, tuple)))
 ```
 dir()函数可以获得一个对象的所有属性和方法，它返回一个包含字符串的list。如：
-```
+```python
 print(dir('abc'))
 ```
 # __init__.py文件介绍
@@ -367,6 +367,25 @@ print(dir('abc'))
 from lib import *
 ```
 import就会把注册在lib包\_\_init\_\_.py 文件中\_\_all\_\_变量列表中的子模块和子包导入到当前作用域中来。
+# Python装饰器
+我们定义一个函数。现在，假设我们要增强这个函数的功能，比如，在函数调用前后自动打印日志，但又不希望修改这个函数的定义，这种在代码运行期间动态增加功能的方式，称之为装饰器。本质上，装饰器就是一个返回函数的高阶函数。我们要借助Python的@语法，把装饰器置于函数的定义上方，这样，调用函数时，不仅会运行函数本身，还会在运行函数前运行装饰器。
+举例：
+```python
+def log(func):
+   def wrapper(*args, **kw):
+      print('call %s():' % func.__name__)
+      return func(*args, **kw)
+
+   return wrapper
+
+
+@log
+def now():
+   print('2015-3-25')
+
+
+now()
+```
 # if __name__ == "__main__":的含义
 \_\_name\_\_是标识模块名称的一个系统变量。
 * 假如当前模块是主模块（也就是调用其他模块的模块），那么此模块的\_\_name\_\_变量值就是\_\_main\_\_；
