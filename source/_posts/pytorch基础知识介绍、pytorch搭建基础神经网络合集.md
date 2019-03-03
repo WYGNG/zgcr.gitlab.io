@@ -2,13 +2,12 @@
 title: pytorch基础知识介绍、pytorch搭建基础神经网络合集
 date: 2019-03-02 19:55:38
 tags:
-- pytorch
+- Pytorch
 categories:
-- pytorch
+- Pytorch
 ---
 
 # pytorch介绍
-
 PyTorch可以追溯到2002年诞生的Torch。Torch是一个与Numpy类似的张量(Tensor)操作库，它使用了一种不是很大众的语言Lua作为接口。在2017年，Torch的幕后团队推出了PyTorch。PyTorch不是简单地封装Lua Torch提供Python接口，而是对Tensor之上的所有模块进行了重构，并新增了最先进的自动求导系统，成为当下最流行的动态图框架。
 PyTorch设计时遵循tensor→variable(autograd)→nn.Module 三个由低到高的抽象层次，分别代表高维数组（张量）、自动求导（变量）和神经网络（层/模块），而且这三个抽象之间联系紧密，可以同时进行修改和操作。
 pytorch的主要特点：
@@ -418,7 +417,7 @@ print(" ".join("%5s" % classes[labels[j]] for j in range(4)))
 
 start_epoch = 0
 start_batch = 0
-epochs = 2
+epochs = 5
 
 # 使用GPU来训练
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -453,10 +452,8 @@ class Net(nn.Module):
       return x
 
 
-# 创建模型
-net = Net()
-# 使用GPU训练时网络中参数全部移动到GPU显存中
-net = net.to(device)
+# 建立网络,使用GPU训练时网络中参数全部移动到GPU显存中
+net = Net().to(device)
 # 定义使用交叉熵损失函数
 criterion = nn.CrossEntropyLoss()
 # 定义使用Adam优化算法,学习率0.001
@@ -482,10 +479,8 @@ for epoch in range(start_epoch + 1, epochs):
    # 指定模型为训练模式，计算梯度
    net.train()
    running_loss = 0.0
-   for i, data in enumerate(trainloader, 0):
-      # 获取一个batch_size样本的inputs和labels
-      inputs, labels = data
-      # 在GPU上训练时，网络权重和输入样本及标签都要移动到GPU显存中
+   for i, (inputs, labels) in enumerate(trainloader, 0):
+      # 获取一个batch_size样本的inputs和labels;在GPU上训练时，网络权重和输入样本及标签都要移动到GPU显存中
       inputs, labels = inputs.to(device), labels.to(device)
       # pytorch中的backward()函数的计算时梯度是被积累的而不是被替换掉
       # 但是在每一个batch时并不需要将两个batch的梯度混合起来累积，因此这里就需要每个batch开始时设置zero_grad将梯度重置为0
@@ -504,7 +499,7 @@ for epoch in range(start_epoch + 1, epochs):
 
       # 打印loss值,这个loss是每2000次迭代的loss平均值
       running_loss += loss.item()
-      if i % 2000 == 1999:
+      if i % 2000 == 1999 or i == 0:
          print("epoch={},i={:5d},loss={:.3f}".format(epoch + 1, i + 1, running_loss / 2000))
          running_loss = 0.0
          # 用字典形式保存模型参数、epoch和batch，加载时需要先加载网络,然后将参数写入网络
@@ -517,8 +512,7 @@ for epoch in range(start_epoch + 1, epochs):
          torch.save(state, "./model/save1.t7")
 
 # 加载模型
-net = Net()
-net = net.to(device)
+net = Net().to(device)
 net_record = torch.load("./model/save1.t7")
 net.load_state_dict(net_record["state"])
 # 打印读取的模型训练保存时的epoch和batch
@@ -530,10 +524,9 @@ total = 0
 # 测试时必须调用.eval()方法将网络设为评估模式
 net.eval()
 # 评估模型时,我们不需要这些参数参与自动求导,使用torch.no_grad()禁止跟踪计算记录
-for data in testloader:
+for (images, labels) in testloader:
    # 测试时必须调用.eval()方法将网络设为评估模式
    net.eval()
-   images, labels = data
    images, labels = images.to(device), labels.to(device)
    outputs = net(images)
    _, predicted = torch.max(outputs.data, 1)
@@ -545,10 +538,9 @@ print("Accuracy of the network on the 10000 test images:{}%".format(100 * correc
 # 计算一下测试每种类图片时的预测准确率
 class_correct = list(0. for i in range(10))
 class_total = list(0. for i in range(10))
-for data in testloader:
+for (images, labels) in testloader:
    # 测试时必须调用.eval()方法将网络设为评估模式
    net.eval()
-   images, labels = data
    images, labels = images.to(device), labels.to(device)
    outputs = net(images)
    _, predicted = torch.max(outputs, 1)
@@ -561,3 +553,6 @@ for data in testloader:
 for i in range(10):
    print("Accuracy of {}:{}%".format(classes[i], 100 * class_correct[i] / class_total[i]))
 ```
+
+
+

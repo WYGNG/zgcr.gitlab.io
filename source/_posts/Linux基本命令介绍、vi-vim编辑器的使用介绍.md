@@ -2,9 +2,9 @@
 title: Linux基本命令介绍、vi/vim编辑器的使用介绍
 date: 2019-02-21 20:47:37
 tags:
-- linux
+- Linux
 categories:
-- linux
+- Linux
 ---
 
 # linux基本命令
