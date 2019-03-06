@@ -2,9 +2,9 @@
 title: 使用LSTM神经网络+CTC loss识别freetype库生成的不定长验证码
 date: 2019-03-05 13:03:07
 tags:
-- 深度学习
+- 深度学习算法实践	
 categories:
-- 深度学习
+- 深度学习算法实践
 ---
 
 # freetype库使用介绍
