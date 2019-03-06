@@ -11,7 +11,6 @@ categories:
 Tensorflow由Google开发，是GitHub上最受欢迎的机器学习/深度学习库之一。TensorFlow的核心概念是节点、张量和计算图。
 节点一般表示施加的某个数学操作，也可以表示数据输入的起点/输出的终点，或者是读取/写入持久变量的终点。线表示之间的输入/输出关系。张量可以理解为是不同维度的矩阵，张量沿着线的方向在计算图中流动，这就是取名为Tensorflow的原因。
 需要注意的是，在TensorFlow中，我们必须要先完整地构建一个计算图，然后按照计算图启动一个会话，然后才能在会话中完成变量的初始化和计算，最终得到结果。
-
 # Tensorflow张量、placeholder占位符、Session会话
 在TensorFlow中，可以将张量理解为数组。如果是0阶张量，那么这个张量是一个标量，也就是一个数字，如果是一阶张量可以理解为向量或者是一维数组，n阶张量可以理解为n维的数组。张量中包含了三个重要的属性，名字、维度、类型。
 TensorFlow张量的实现并没有直接采用数组的形式，张量它只是对运算结果的引用，如果我们直接print某个张量，我们只能打印出一个指向该张量内容的指针，而不能打印出张量的内容。
@@ -442,6 +441,73 @@ with tf.Session() as sess:
 # 要在tensorboard中查看数据,在保存日志文件的上一级目录中打开cmd.exe,输入下列命令:
 # tensorboard --logdir=./tmp/
 # 然后在浏览器中输入类似http://zgcr-win10-PC:6006这样的地址即可查看
+```
+# Tensorflow+matplotlib可视化梯度下降
+```python
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import os
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+lr = 0.1
+iteration = 500
+
+# x和y数据
+real_params = [1.2, 2.5]
+x_data = np.linspace(-1, 1, 200)[:, np.newaxis]
+noise = np.random.normal(0, 0.1, x_data.shape)
+y_data = x_data * real_params[0] + real_params[1] + noise
+
+X = tf.placeholder(tf.float32, [None, 1])
+Y = tf.placeholder(tf.float32, [None, 1])
+
+# 要训练的w和b初始化为5和4
+weight = tf.Variable(initial_value=[[5]], dtype=tf.float32)
+bias = tf.Variable(initial_value=[[4]], dtype=tf.float32)
+
+y = tf.matmul(X, weight) + bias
+loss = tf.losses.mean_squared_error(Y, y)
+train_op = tf.train.GradientDescentOptimizer(lr).minimize(loss)
+
+with tf.Session() as sess:
+   sess.run(tf.global_variables_initializer())
+   w_record, b_record, loss_record = [], [], []
+   for i in range(iteration):
+      w, b, cost, _ = sess.run([weight, bias, loss, train_op], feed_dict={X: x_data, Y: y_data})
+      w_record.append(w)
+      b_record.append(b)
+      loss_record.append(cost)
+   result = sess.run(y, feed_dict={X: x_data, Y: y_data})
+# 画直线图
+plt.figure(figsize=(8, 6))
+plt.scatter(x_data, y_data, s=1, color="r", alpha=0.5)
+plt.plot(x_data, result, lw=1)
+plt.show()
+plt.close()
+
+# 画3D图,图上三个坐标为w,b,loss值
+fig = plt.figure(figsize=(8, 6))
+ax_3d = Axes3D(fig)
+# 构建三维曲面
+w_3d, b_3d = np.meshgrid(np.linspace(-4.2, 6.2, 50), np.linspace(-2.5, 7.5, 50))
+loss_3d = np.array(
+   [np.mean(np.square((x_data * w_ + b_) - y_data)) for w_, b_ in zip(w_3d.ravel(), b_3d.ravel())]).reshape(w_3d.shape)
+# 画出三维曲面
+ax_3d.plot_surface(w_3d, b_3d, loss_3d, cmap=plt.get_cmap("hot"))
+# .ravel()函数会直接修改原始矩阵,也是将矩阵降成一维
+w_record, b_record = np.array(w_record).ravel(), np.array(b_record).ravel()
+# 根据w,b,loss的值,画出梯度下降曲线
+ax_3d.plot(w_record, b_record, loss_record, lw=10, c="blue")
+# 梯度下降起始点
+ax_3d.scatter(w_record[0], b_record[0], loss_record[0], s=20, color="black")
+ax_3d.set_xlabel("w")
+ax_3d.set_ylabel("b")
+plt.show()
+plt.close()
 ```
 # Tensorflow搭建线性回归神经网络
 使用maplotlib画图时，如果有中文字符，一定要设置中文字体，因为matplotlib默认字体不支持中文，无法正常显示。

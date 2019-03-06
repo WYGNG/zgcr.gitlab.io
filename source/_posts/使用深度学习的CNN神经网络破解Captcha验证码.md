@@ -2,9 +2,9 @@
 title: 使用深度学习的CNN神经网络破解Captcha验证码
 date: 2019-03-04 23:35:43
 tags:
-- Tensorflow
+- 深度学习
 categories:
-- Tensorflow
+- 深度学习
 ---
 
 # Captcha样本数据的生成与处理
