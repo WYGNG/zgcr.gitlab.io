@@ -173,6 +173,133 @@ with torch.no_grad():
 * 对于文本，可以使用Python和Cython来加载，或者使用 NLTK或SpaCy 处理
 
 torchvision包含了处理一些常用的图像数据集。这些数据集包括Imagenet, CIFAR10, MNIST等。除了数据加载以外，torchvision还包含了图像转换器、torchvision.datasets和torch.utils.data.DataLoader。
+# pytorch训练、验证、测试实例
+mnist训练集有60000个样本，测试集有10000个样本，将训练集分为50000个样本的训练集和10000个样本的验证集，每训练一个epoch(50000个样本)就使用10000个样本的验证集来测试模型准确率，训练10个epoch后使用测试集来测试模型对测试集的准确率。
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+
+batch_size = 200
+learning_rate = 0.01
+epochs = 10
+# 自动下载pytorch提供的mnist数据集,可能需要代理才能下载下来,我们这里以mnist数据集为例说明pytorch中交叉验证的用法
+# transforms.ToTensor()将shape为(H,W,C)的nump.ndarray或img转为shape为(C,H,W)的tensor,其将每一个数值归一化到[0,1]直接除以255即可
+# H和W分别为28和28,C为1
+# transforms.Normalize((0.1307,), (0.3081,))将数据集按均值0.1307、标准差0.3081进行标准化,这个均值和标准差是官方例子给的
+# 取得训练集
+train_data_1 = datasets.MNIST("data", train=True, download=True, transform=transforms.Compose(
+   [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]))
+# 从训练集中取一个batch_size的样本用来训练,取时打乱数据
+train_batch_data = DataLoader(train_data_1, batch_size=batch_size, shuffle=True)
+# 取得测试集
+test_data = datasets.MNIST("data", train=False, transform=transforms.Compose(
+   [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]))
+# 从测试集中取一个batch_size的样本用来测试,取时打乱数据
+test_batch_data = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True)
+
+# print("训练集大小:{},测试集大小:{}".format(len(train_data_1), len(test_data)))
+#  torch.utils.data.random_split按照给定的长度将数据集划分成没有重叠的新数据集组合,50000+10000应当等于原有训练集的大小
+train_data_1, validation_data_2 = torch.utils.data.random_split(train_data_1, [50000, 10000])
+# 训练集重新划分成两部分,第一部分大小50000,第二部分大小10000
+# print("训练集第一部分:{},训练集第二部分:{}".format(len(train_data_1), len(train_data_2)))
+# 重新划分的两部分训练集各取一个batch_size的样本
+train_batch_data_1 = torch.utils.data.DataLoader(train_data_1, batch_size=batch_size, shuffle=True)
+validation_batch_data_2 = torch.utils.data.DataLoader(validation_data_2, batch_size=batch_size, shuffle=True)
+
+
+class FullyConnectedNeuralNet(nn.Module):
+   def __init__(self):
+      super(FullyConnectedNeuralNet, self).__init__()
+      # 定义一个全连接神经网络结构,每层使用Leakly ReLU激活函数
+      self.model = nn.Sequential(
+         nn.Linear(784, 200),
+         nn.LeakyReLU(inplace=True),
+         nn.Linear(200, 200),
+         nn.LeakyReLU(inplace=True),
+         nn.Linear(200, 10),
+         nn.LeakyReLU(inplace=True),
+      )
+
+   # 定义前向网络
+   def forward(self, x):
+      x = self.model(x)
+
+      return x
+
+
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+net = FullyConnectedNeuralNet().to(DEVICE)
+# 定义优化算法为SGD,定义损失函数为交叉熵损失函数
+optimizer = optim.SGD(net.parameters(), lr=learning_rate)
+criteon = nn.CrossEntropyLoss().to(DEVICE)
+iteration = int(len(train_data_1) / batch_size)
+# 训练epochs轮
+for epoch in range(epochs):
+   # train_batch_data_1每次从train_data_1训练集中取出batch_size个样本进行训练
+   for iter_index, (data, label) in enumerate(train_batch_data_1):
+      # 改变张量形状为(len(train_batch_data),28*28)
+      data = data.view(-1, 28 * 28)
+      # 训练数据和训练标签都放到GPU中训练
+      data, label = data.to(DEVICE), label.to(DEVICE)
+      # 计算前向网络最后结果
+      preds = net(data)
+      # 计算损失函数结果
+      loss = criteon(preds, label)
+      # pytorch中计算时梯度是被积累的,但是每个batch_size训练后梯度需要清零
+      optimizer.zero_grad()
+      # 每轮iteration反向传播梯度更新参数
+      loss.backward()
+      # optimizer.step()用在每个batch中,使用optimizer.step(),模型参数才会更新
+      optimizer.step()
+      # 每训练100轮iteration100轮打印loss值
+      if iter_index % 100 == 0:
+         print("epoch:{} [{}/{}({:.1f}%)],train_loss:{:.4f}".format(epoch, iter_index * len(data),
+                                                                    len(train_batch_data_1.dataset),
+                                                                    100.0 * iter_index / len(train_batch_data_1),
+                                                                    loss.item()))
+
+   # test_loss为验证集的平均loss,acc为预测准确率
+   validation_loss = 0
+   validation_acc = 0
+   # 每一轮epoch训练完后从validation_data_2中取出batch_size个样本用来验证
+   for data, label in validation_batch_data_2:
+      data = data.view(-1, 28 * 28)
+      data, label = data.to(DEVICE), label.to(DEVICE)
+      preds = net(data)
+      validation_loss += criteon(preds, label).item()
+      # 求每个预测向量中最大值的下标即为预测的标签
+      # 第一个1是指在1号维度上找每个Tensor的最大值
+      # 下标[0]为每个Tensor的最大值,[1]为每个Tensor最大值对应的index下标
+      pred_label = preds.data.max(1)[1]
+      # 计算预测标签与真实标签是否相同,相同说明预测正确
+      validation_acc += pred_label.eq(label.data).sum()
+
+   validation_loss /= len(validation_batch_data_2.dataset)
+   print("Validation average loss:{:.4f},Validation accuracy:{}/{}({:.2f}%)".format(validation_loss, validation_acc,
+                                                                                    len(
+                                                                                       validation_batch_data_2.dataset),
+                                                                                    100.0 * validation_acc / len(
+                                                                                       validation_batch_data_2.dataset)))
+
+# 测试集平均loss和准确率
+test_loss = 0
+test_acc = 0
+# 从test_data中取出batch_size个样本用来测试
+for data, label in test_batch_data:
+   data = data.view(-1, 28 * 28)
+   data, label = data.to(DEVICE), label.to(DEVICE)
+   preds = net(data)
+   test_loss += criteon(preds, label).item()
+   pred_label = preds.data.max(1)[1]
+   test_acc += pred_label.eq(label.data).sum()
+
+test_loss /= len(test_batch_data.dataset)
+print("Test average loss:{:.4f},Test accuracy:{}/{}({:.2f}%)".format(test_loss, test_acc, len(test_batch_data.dataset),
+                                                                     100.0 * test_acc / len(test_batch_data.dataset)))
+```
 # pytorch搭建逻辑回归神经网络
 logistic回归就是在线性回归函数y=wx+b的基础上再加一层非线性函数，一般就是加sigmoid函数，因为Sigmod函数的输出的是是对于0到1之间的概率值，当概率大于0.5预测为1，小于0.5预测为0。
 我们使用UCI German Credit数据集，这是UCI的德国信用数据集，里面有原数据和数值化后的数据。German Credit数据是根据个人的银行贷款信息和申请客户贷款逾期发生情况来预测贷款违约倾向的数据集，数据集包含24个维度的1000条数据。
@@ -553,6 +680,3 @@ for (images, labels) in testloader:
 for i in range(10):
    print("Accuracy of {}:{}%".format(classes[i], 100 * class_correct[i] / class_total[i]))
 ```
-
-
-
