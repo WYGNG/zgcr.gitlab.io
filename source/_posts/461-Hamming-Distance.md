@@ -18,6 +18,7 @@ Note:
 
 
 Example:
+```
 Input: x = 1, y = 4
 
 Output: 2
@@ -25,9 +26,10 @@ Output: 2
 Explanation:
 1   (0 0 0 1)
 4   (0 1 0 0)
-​       ↑   ↑
+       ↑   ↑
 
 The above arrows point to positions where the corresponding bits are different.
+```
 # C/C++解法
 汉明距离即两个整数的二进制表示形式中，相同位置上对应位不同的数量。这里用bitset类将int整数转化位二进制数，然后遍历看同样位置上的数字是否相等即可。
 ```cpp
