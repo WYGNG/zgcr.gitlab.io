@@ -1,5 +1,5 @@
 ---
-title: 461. Hamming Distance
+title: 461-Hamming Distance
 date: 2019-04-07 16:21:40
 tags:
 - Leetcode

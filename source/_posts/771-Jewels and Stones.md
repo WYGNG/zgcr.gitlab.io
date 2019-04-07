@@ -1,5 +1,5 @@
 ---
-title: 771. Jewels and Stones
+title: 771-Jewels and Stones
 date: 2019-04-07 15:42:16
 tags:
 - Leetcode
