@@ -1,5 +1,5 @@
 ---
-title: 283. Move Zeroes
+title: 283-Move Zeroes
 date: 2019-04-08 19:08:14
 tags:
 - Leetcode
