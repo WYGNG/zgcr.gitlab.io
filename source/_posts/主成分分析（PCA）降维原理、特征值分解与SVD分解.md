@@ -2,9 +2,9 @@
 title: 主成分分析（PCA）降维原理、特征值分解与SVD分解
 date: 2019-03-09 19:42:36
 tags:
-- 机器学习原理推导
+- 特征工程
 categories:
-- 机器学习原理推导
+- 特征工程
 mathjax: true
 ---
 
