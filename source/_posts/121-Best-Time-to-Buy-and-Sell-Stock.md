@@ -29,6 +29,7 @@ Output: 0
 Explanation: In this case, no transaction is done, i.e. max profit = 0.
 ```
 # C/C++解法
+一次循环，每轮循环先检查当前位置是否为最小价格，是则赋给buy；然后检查差价，如果本轮buy值变动成当前位置，则price-buy就为0；否则price-buy一定是个正值。这样就保证了buy在卖出价格之前的顺序性。
 ```cpp
 # include <iostream>
 # include <vector>

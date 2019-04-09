@@ -8,7 +8,6 @@ categories:
 ---
 
 # 题目
-
 Given an array of size n, find the majority element. The majority element is the element that appears more than ⌊ n/2 ⌋ times.
 
 You may assume that the array is non-empty and the majority element always exist in the array.
@@ -24,6 +23,8 @@ Input: [2,2,1,1,1,2,2]
 Output: 2
 ```
 # C/C++解法
+先初始化majority为首个数，lag为0，遍历数组，遇到和majority相同数则flag加1，否则减1。如果flag<0了，说明遍历到第i个元素为止时，前i个元素的子数组中majority的数不是majorityElement，则令majority为子数组最后一个元素，flag=1重新开始计数，又majorityElement的元素数量必须大于nums.size()/2，因此这种做法如果在前i个元素时majorityElement的数的数目未达到i/2时，后面nums.size()-i个元素的子数组中majorityElement的数目一定超过(nums.size()-i)/2个，也就是说，前面令majority为子数组最后一个元素如果不是majorityElement，最后flag一定会小于0，然后majority取到majorityElement的元素。
+
 ```cpp
 # include <string>
 # include <iostream>
