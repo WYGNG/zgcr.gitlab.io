@@ -77,3 +77,52 @@ nmake /f makefile.vc
 python -m pip install imgaug
 ```
 这次安装成功了。
+# Python安装pyecharts包及保存图片为png格式问题
+pip安装pyecharts包、pyecharts-snapshot包和地图包:
+```python
+python -m pip install pyecharts
+python -m pip install pyecharts-snapshot
+python -m pip install echarts-countries-pypkg
+python -m pip install echarts-china-provinces-pypkg
+python -m pip install echarts-china-cities-pypkg
+python -m pip install echarts-china-counties-pypkg
+python -m pip install echarts-china-misc-pypkg
+python -m pip install echarts-united-kingdom-pypkg
+```
+安装完成后应当可以用pyecharts画图了，但此时图片只能用html网页形式保存(网页形式可以进行一些图片交互操作)。
+如果我们想以png格式保存图片，我们还需要安装phantomjs。安装命令:
+```python
+npm install -g phantomjs-prebuilt
+```
+安装过程中需要下载一个包phantomjs-2.1.1-windows.zip，我们可以从cmd窗口中直接复制下载地址将包下载到本地，放入目录:C:\Users\zgcr6\AppData\Local\Temp\phantomjs\phantomjs-2.1.1-windows.zip，然后关闭cmd窗口，重新打开cmd，运行上面的命令即可。
+安装完成后我们还要从官网下载node.js并安装，最后重启计算机即可。测试用图片代码:
+```python
+data = [
+("海门", 9),("鄂尔多斯", 12),("招远", 12),("舟山", 12),("齐齐哈尔", 14),("盐城", 15),
+("赤峰", 16),("青岛", 18),("乳山", 18),("金昌", 19),("泉州", 21),("莱西", 21),
+("日照", 21),("胶南", 22),("南通", 23),("拉萨", 24),("云浮", 24),("梅州", 25)]
+
+attr, value = geo.cast(data)
+
+geo = Geo("全国主要城市空气质量热力图", "data from pm2.5", title_color="#fff", title_pos="center", width=1200, height=600, background_color='#404a59')
+
+geo.add("空气质量热力图", attr, value, visual_range=[0, 25], type='heatmap',visual_text_color="#fff", symbol_size=15, is_visualmap=True, is_roam=False)
+geo.show_config()
+geo.render(path="4-04空气质量热力图.png")
+```
+# Python安装plotly包
+安装plotly命令:
+```python
+python -m pip install plotly
+```
+注意plotly分在线生成图片和离线生成图片两种形式。
+在线生成图片需要在plotly官网上申请一个账户，并在自己的账户中生成一个api_key，然后使用必须加上下面两行语句。注意免费账户在线生成图片时在你的账户里会保存这个图片，免费账户每天限制在线生成100张图片，且sharing不能设为private,world_readable必须设为True。
+```
+plotly.tools.set_credentials_file(username='', api_key='')
+# 免费账户在线生成图片sharing不能设为private,world_readable必须设为True
+plotly.tools.set_config_file(world_readable=True)
+```
+如果用离线生成图片，请加上下面这句:
+```python
+plotly.offline.init_notebook_mode(connected=True)
+```
