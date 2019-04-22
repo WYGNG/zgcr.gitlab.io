@@ -629,6 +629,9 @@ C:test
 * sys.path[0]或sys.argv[0]:"C:\test\getpath"，即被执行脚本path.py的所在目录。
 * os.path.realpath(__file__)[0]:"C:\test\sub\sub_path.py"，得到的时sub_path.py的完整路径(含文件名)；如果前面再加上os.path.split，输出的路径就是"C:\test\sub"。
 
+# is与==的区别
+is和\=\=都是对对象进行比较判断作用的，但对对象比较判断的内容并不相同。\=\=是python标准操作符中的比较操作符，用来比较判断两个对象的内容（value）是否相等；is比较判断的是对象间的唯一身份标识id是否相同，也就是比较俩对象是否为同一个实例对象，是否指向同一个内存地址。
+
 # Python tqdm模块的使用：可视化进度条
 tqdm是一个快速，可扩展的Python进度条，可以在Python的for循环中添加一个进度提示信息，进度条可以针对任意迭代器对象。这是一个第三方模块，需要使用下命的命令安装：
 ```python

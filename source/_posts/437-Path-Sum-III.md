@@ -175,10 +175,8 @@ void print_tree_hierarchical_traversal(TreeNode *root) {
       s.pop();
       if (temp) {
          cout << temp->val << " ";
-         if (temp->left || temp->right) {
-            s.push(temp->left);
-            s.push(temp->right);
-         }
+         s.push(temp->left);
+         s.push(temp->right);
       } else {
          cout << "null" << " ";
       }
