@@ -12,7 +12,7 @@ categories:
 **注意:**
 本安装方法设置完成后，不需要使用easybcd设置启动项。开机时是ubuntu系统在引导，选择ubuntu即可进入ubuntu18.04系统，选择windows boot manager即可进入win10系统。
 我的电脑是神舟精盾t97e，显卡为GTX 1070MAX-Q，原来的win10系统单独安装在一块硬盘中(只有一个分区，即C盘)，而笔记本中一共有两块硬盘。现在我要在另一个硬盘中安装ubuntu18.04系统。
-先从官网上下载ubuntu18.04系统镜像(版本ubuntu18.04.02 64位)，下载地址:https://www.ubuntu.com/download/desktop 。如果觉得官网下载速度慢可以去阿里云镜像站下载:http://mirrors.aliyun.com/ubuntu-releases/ 。然后使用UltralSO将系统镜像刻录到一个U盘中(大于8G)，做成一个ubuntu18.04系统安装盘。注意刻录时勾选UtralSO选项配置->刻录->写入时验证，否则对于高速U盘虽然会显示刻录成功，但是在安装ubuntu系统时在分区后的步骤中往往会被检测提示系统镜像文件有错误，导致安装失败。
+先从官网上下载ubuntu18.04系统镜像(版本ubuntu18.04.02 64位)，下载地址:https://www.ubuntu.com/download/desktop 。如果觉得官网下载速度慢可以去阿里云镜像站下载:http://mirrors.aliyun.com/ubuntu-releases/ 。然后使用UltralSO将系统镜像刻录到一个U盘中(大于8G)，做成一个ubuntu18.04系统安装盘。
 重启win10系统，开机不停按F2键进入bios，如果boot mode为uefi，将secure boot设置成disable(secure boot即只可以启动Win8及以上系统，不能启动其他系统，包括linux)。然后调整启动顺序，将U盘调整成第一启动盘。保存设置并重启系统。选择install ubuntu开始安装。这里核芯显卡+N卡的双显卡电脑容易出现卡死在ubuntu logo界面的情况，我们在移动项到install ubuntu时按e进入启动配置参数界面，倒数第二行的quiet splash ---修改为:
 ```
 quiet splash acpi_osi=linux nomodeset
@@ -22,7 +22,7 @@ quiet splash acpi_osi=linux nomodeset
 下一步选择安装类型，如果我们想把ubuntu18.04与win10系统安装在同一个盘中，就选择第一项安装ubuntu，与win10共存(install ubuntu alongside windows boot manager)，此时安装程序会自动检测你的硬盘剩余空闲空间，并给ubuntu和win10划分适当的大小，这时安装程序会自动给ubuntu系统划分各个挂载分区的大小。由于我们要把ubuntu18.04安装到另外一个盘，因此我们选择其他选项(something else)，这时我们可以手动设置各个挂载分区的大小。
 挂载分区的设置:
 * 首先从硬盘中删除某个不用的分区，得到一块未分配空间；
-* 先设置一个swap分区(交换空间)，这相当于win10系统中的虚拟内存，设置成和你的物理内存一样大即可，选择逻辑分区、空间起始位置和ext4文件日志系统，比如我内存16G，swap就设为16384MB；
+* 先设置一个swap分区(交换空间)，这相当于win10系统中的虚拟内存，设置成和你的物理内存一样大即可，选择逻辑分区、空间起始位置，比如我内存16G，swap就设为16384MB；
 * 设置一个home分区，这个分区相当于win10中C盘里的user文件夹，选择逻辑分区、空间起始位置和ext4文件日志系统，挂载点/home，你的图片、视频、下载等文件夹都在这个分区里面，如果你是娱乐向用户，建议将这个分区设置的大一些，比如我将这个分区设为40G；
 * 设置一个user分区，选择逻辑分区、空间起始位置和ext4文件日志系统，挂载点/usr，这个分区相当于你的软件安装位置，Linux下一般安装第三方软件你是没办法更改安装目录的，系统都会统一地安装到/usr目录下面，所以这个分区我也设为40G大小。对于ubuntu18.04也可以不分这个分区，系统会在/分区下自动创建一个/usr目录，不过这样你就要把/分区划的更大一些；
 * 最后设置一个/分区，注意安装ubuntu18.0时这个分区必须最后分，否则前面的分区就不能分了。选择主分区、空间起始位置和ext4文件日志系统，挂载点/，这个分区相当于win10系统中的C盘，即所有除了user和home之外的系统文件都在这里。这个分区最好不要小于30G，比如我将这个分区设为50G；
