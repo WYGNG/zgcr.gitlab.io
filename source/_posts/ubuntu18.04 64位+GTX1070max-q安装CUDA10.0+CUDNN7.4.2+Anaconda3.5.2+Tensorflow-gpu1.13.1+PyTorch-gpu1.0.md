@@ -129,6 +129,8 @@ exec -a "$0" "$HERE/chrome" "$@" --user-data-dir --no-sandbox
 //我们不进行上面对root账户的设置，使用下面的设置，这样第一次打开浏览器后可将图标添加到收藏夹，以后直接点击图标即可打开chrome浏览器
 sudo -s
 chmod -R 777 /home/zgcr/.config/google-chrome //刚才几个提示权限不够的文件夹提升权限
+//参数-R对目前目录下的所有档案与子目录进行相同的权限变更(即以递回的方式逐个变更
+//将当前目录下的所有文件及子目录的文件拥有者权限设置为读、写、可执行，文件拥有者所在的用户组成员具备读、写、可执行权限，其它用户也具备读、写、可执行权限
 google-chrome //默认安装位置/usr/bin/google-chrome
 ```
 **安装网易云音乐:**
@@ -137,6 +139,7 @@ google-chrome //默认安装位置/usr/bin/google-chrome
 ```
 sudo -s
 apt-get -f -y install //解决依赖问题
+//apt-get -f install是修复依赖关系(depends)的命令,就是假如你的系统上有某个package不满足依赖条件,这个命令就会自动修复,安装那个package依赖的package
 dpkg -i netease-cloud-music_1.2.0_amd64_ubuntu_20190422.deb //注意后面文件名改成你下载下来的文件
 netease-cloud-music //打开网易云音乐，打开后添加到收藏夹，之后点击图标即可打开
 ```
@@ -299,7 +302,7 @@ pip install https://download.pytorch.org/whl/cu100/torch-1.0.1.post2-cp36-cp36m-
 pip install torchvision
 ```
 上面的两行命令是在线安装pytorch和torchvision。由于pytorch比较大，我们可以先将whl文件下载到本地，即命令中的:https://download.pytorch.org/whl/cu100/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl 就是下载地址。如果觉得这个下载地址下载的速度太慢也可以从清华镜像站下载:https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/linux-64/ ，选择pytorch-nightly-1.0.0.dev20190409-py3.6_cuda10.0.130_cudnn7.4.2_0.tar.bz2下载即可。
-然后我们再创建一个名为PyTorch-gpu的环境:
+然后我们再创建一个名为PyTorch-gpu-1.0的环境:
 ```
 conda create -n pytorch-gpu-1.0 python=3.6.6
 ```
