@@ -69,7 +69,7 @@ reboot //安装完成后，重启
 nvidia-smi //如果出现GPU列表，里面有你的独立显卡，说明显卡已正常运行
 nvidia-settings //显示你的显卡信息
 ```
-# Ubuntu18.04系统更换国内软件源、解决ubuntu与win10系统时间差8小时、安装intelligent pinyin中文输入法、设置右键新建文件选项、安装google chrome、安装git、安装网易云音乐、安装最新稳定版nodejs和npm
+# Ubuntu18.04系统更换国内软件源、解决ubuntu与win10系统时间差8小时、安装intelligent pinyin中文输入法、设置右键新建文件选项、安装google chrome、安装网易云音乐、安装wps office、最好用的ssr、安装git、安装微信、安装最新稳定版nodejs和npm
 **更换为国内阿里云的软件源:**
 ```
 sudo -s
@@ -157,6 +157,14 @@ sudo -s //必须获取root权限
 apt-get install git
 git config --global user.name "Your Name" //换成你的git提交名
 git config --global user.email "email@example.com" //换成你的git提交时的邮箱名
+```
+**安装微信:**
+使用snap安装微信:
+```
+sudo -s
+// 注意snap只有官方仓库没有镜像，下载时从官方仓库中下载，请务必挂vpn下载，否则速度奇慢
+snap install electronic-wechat
+electronic-wechat //启动微信后，添加到收藏夹，之后点击图标即可打开
 ```
 **安装最新稳定版nodejs和npm:**
 ```
