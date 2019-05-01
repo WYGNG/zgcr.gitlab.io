@@ -67,13 +67,14 @@ $$
 论文:SSD：Single Shot MultiBox Detector
 论文地址: https://arxiv.org/pdf/1512.02325.pdf 。
 SSD网络采取了one stage的思想，并且在网络中融入了Faster R-CNN中的anchors，同时做了特征分层提取并依次计算边框回归和分类的操作，由此可以适应多种尺度目标的训练和检测任务。
+## SSD网络结构
 SSD网络的主结构是VGG16，前五层VGG16的前五层网络，后面接Conv6和Conv7（卷积核3x3x1024和1x1x1024）是将VGG16的后两层全连接层网络转换而来。在之后并增加了4个卷积层（卷积核1x1x256、1x1x128、1x1x128、1x1x128）来构造网络结构。
 ## SSD网络新特性
 **default box:**
 类似于Faster RCNN中的anchor，SSD中的default box长宽比包括1, 2, 3, 1/2, 1/3这几种。当长宽比为1时，作者还额外增加一种default box，一共有6种default box。 
 **多尺度的特征图上的目标检测和分类:**
 第3、7、8、9、10卷积层和第11pooling层的特征图均输入extra feature层作目标检测和分类，使用一个3x3的卷积核输出每个default box检测到不同类别物体的概率，输出个数为预测类别个数。使用一个3x3的卷积核检测每个default box的位置（x, y, w, h）。需要注意的是各层做目标检测和分类的特征图选定的k值不同，分别是4、6、6、6、6、6。当k=6表示有[1, 2, 3, 1/2, 1/3], 共5种长宽比, 而1又包括了2种输出大小。
-SSD网络在特征图的每个像素点预测K个Box。对于每个Box，预测C个类别得分，以及相对于Default Bounding Box的4个偏移值，这样需要（C+4）xK个预测器，在MxN的特征图上将产生（C+4）xKxMxN个预测值。
+SSD网络在特征图的每个像素点预测K个Box。对于每个Box，预测C个类别得分，以及相对于Default Bounding Box的4个偏移值，这样需要（C+4）K个预测器，在MxN的特征图上将产生（C+4）KMN个预测值。
 所有特征图上一共8732个default box，计算如下:
 $$
 \left(38 \times 38 \times 4+19 \times 19 \times 6+10 \times 10 \times 6+5 \times 5 \times 6+3 \times 3 \times 4+1 \times 1 \times 4\right)=8732
