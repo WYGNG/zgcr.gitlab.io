@@ -1,5 +1,5 @@
 ---
-title: win10_64位+GTX1070max-q安装CUDA10.0+CUDNN7.4.2+Anaconda3.5.2+Tensorflow-gpu1.13.1+PyTorch-gpu1.1
+title: win10-64位+GTX1070max-q安装CUDA10.0+CUDNN7.4.2+Anaconda3.5.2+Tensorflow-gpu1.13.1+PyTorch-gpu1.1
 date: 2019-02-21 16:06:47
 tags:
 - 各种环境搭建
