@@ -1,5 +1,5 @@
 ---
-title: ubuntu18.04 64位+GTX1070max-q安装CUDA10.0+CUDNN7.4.2+Anaconda3.5.2+Tensorflow-gpu1.13.1+PyTorch-gpu1.0
+title: ubuntu18.04 64位+GTX1070max-q安装CUDA10.0+CUDNN7.4.2+Anaconda3.5.2+Tensorflow-gpu1.13.1+PyTorch-gpu1.1
 date: 2019-04-27 21:30:56
 tags:
 - 各种环境搭建
@@ -303,34 +303,34 @@ sess = tf.Session()
 print(sess.run(hello))
 ```
 如果打印出b'Hello, tf!'则说明安装成功。
-# 安装PyTorch-gpu1.0
-在这个地址:https://pytorch.org/get-started/locally/ ，选择stable(1.0)->linux->pip->python3.6->CUDA10，然后得到两行命令:
+# 安装PyTorch-gpu1.1
+请务必安装PyTorch-gpu1.1.0，因为1.1.0版本官方完美支持tensorboard。在这个地址:https://pytorch.org/get-started/locally/ ，选择stable(1.1)->linux->pip->python3.6->CUDA10，然后得到两行命令:
 ```
-pip install https://download.pytorch.org/whl/cu100/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl
-pip install torchvision
+pip3 install https://download.pytorch.org/whl/cu100/torch-1.1.0-cp36-cp36m-linux_x86_64.whl
+pip3 install torchvision
 ```
-上面的两行命令是在线安装pytorch和torchvision。由于pytorch比较大，我们可以先将whl文件下载到本地，即命令中的:https://download.pytorch.org/whl/cu100/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl 就是下载地址。如果觉得这个下载地址下载的速度太慢也可以从清华镜像站下载:https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/linux-64/ ，选择pytorch-nightly-1.0.0.dev20190409-py3.6_cuda10.0.130_cudnn7.4.2_0.tar.bz2下载即可。
-然后我们再创建一个名为PyTorch-gpu-1.0的环境:
+上面的两行命令是在线安装pytorch和torchvision。由于pytorch比较大，我们可以先将whl文件下载到本地，即命令中的:https://download.pytorch.org/whl/cu100/torch-1.1.0-cp36-cp36m-linux_x86_64.whl 就是下载地址。如果觉得这个下载地址下载的速度太慢也可以从清华镜像站下载:https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/linux-64/ 。
+然后我们再创建一个名为PyTorch-gpu-1.1的环境:
 ```
-conda create -n pytorch-gpu-1.0 python=3.6.6
+conda create -n pytorch-gpu-1.1 python=3.6.6
 ```
-下面我们要把默认的Python环境设为新安装的pytorch-gpu-1.0这个文件夹中的Python环境:
+下面我们要把默认的Python环境设为新安装的pytorch-gpu-1.1这个文件夹中的Python环境:
 ```
 gedit ~/.bashrc //~/.bashrc代表的就是 /home/zgcr/.bashrc
 //文件末尾加入下面这行，然后保存，重启终端，再输入python启动的就是anaconda的python了
-export PATH="/home/zgcr/anaconda3/envs/pytorch-gpu-1.0/bin:/home/zgcr/anaconda3/envs/tensorflow-gpu-1.13.1/bin: …… :$PATH:......" //请注意路径的顺序，路径之间用:隔开，最后一个路径之后也要有:。把第一个搜索的路径放在最前面即可，这样我们就可以通过修改这个参数切换不同位置的Python环境，注意路径中换成你自己的用户名
-//我们在anaconda中创建的环境都在/home/zgcr/anaconda3/envs/文件夹下，上面路径中第一个前添加一个路径:/home/zgcr/anaconda3/envs/pytorch-gpu-1.0/bin，然后保存
+export PATH="/home/zgcr/anaconda3/envs/pytorch-gpu-1.1/bin:/home/zgcr/anaconda3/envs/tensorflow-gpu-1.13.1/bin: …… :$PATH:......" //请注意路径的顺序，路径之间用:隔开，最后一个路径之后也要有:。把第一个搜索的路径放在最前面即可，这样我们就可以通过修改这个参数切换不同位置的Python环境，注意路径中换成你自己的用户名
+//我们在anaconda中创建的环境都在/home/zgcr/anaconda3/envs/文件夹下，上面路径中第一个前添加一个路径:/home/zgcr/anaconda3/envs/pytorch-gpu-1.1/bin，然后保存
 source ~/.bashrc // 使环境变量立即生效
 ```
 **注意:**
-我们必须先安装CUDA才能安装GPU版的pytorch。下面我们要用pip安装下载到本地的torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl。在文件所在目录右键打开终端，使用下列命令:
+我们必须先安装CUDA才能安装GPU版的pytorch。下面我们要用pip安装下载到本地的torch-1.1.0-cp36-cp36m-linux_x86_64.whl。在文件所在目录右键打开终端，使用下列命令:
 ```
 which python //查看现在启动的python的安装位置，看看我们的环境变量设置是否正确
-cp torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl /home/zgcr/anaconda3/envs/pytorch-gpu-1.0/bin
-cd /home/zgcr/anaconda3/envs/pytorch-gpu-1.0/bin
-python -m pip install torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl
+cp torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl /home/zgcr/anaconda3/envs/pytorch-gpu-1.1/bin
+cd /home/zgcr/anaconda3/envs/pytorch-gpu-1.1/bin
+python -m pip install torch-1.1.0-cp36-cp36m-linux_x86_64.whl
 pip list //查看已安装的包
-rm -i torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl //删除刚才复制的安装包
+rm -i torch-1.1.0-cp36-cp36m-linux_x86_64.whl //删除刚才复制的安装包
 python -m pip install torchvision
 //如果上面的命令因为网络问题安装失败，那么选择下面的命令
 python -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple torchvision 
@@ -340,5 +340,5 @@ python -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple torchvision
 pwd //查看当前终端打开时目录的完整路径
 //文件夹中有子文件夹，必须加上-r递归拷贝
 cp -r /home/zgcr/anaconda3/envs/tensorflow-gpu-1.13.1 /home/zgcr/下载
-cp -r /home/zgcr/anaconda3/envs/pytorch-gpu-1.0 /home/zgcr/下载
+cp -r /home/zgcr/anaconda3/envs/pytorch-gpu-1.1 /home/zgcr/下载
 ```
