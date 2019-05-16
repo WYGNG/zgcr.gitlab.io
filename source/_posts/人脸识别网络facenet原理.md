@@ -2,9 +2,9 @@
 title: 人脸识别网络facenet原理
 date: 2019-05-15 23:20:21
 tags:
-- 计算机视觉
+- 人脸检测与识别
 categories:
-- 计算机视觉
+- 人脸检测与识别
 mathjax: true
 ---
 

@@ -2,9 +2,9 @@
 title: GoogLeNet和Inception v1、v2、v3、v4网络介绍
 date: 2019-05-16 22:11:04
 tags:
-- 计算机视觉
+- 深度学习原理推导
 categories:
-- 计算机视觉
+- 深度学习原理推导
 ---
 
 # CNN神经网络的演化过程

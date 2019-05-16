@@ -2,9 +2,9 @@
 title: 目标检测模型性能指标mAP的含义解释
 date: 2019-05-05 22:28:18
 tags:
-- 计算机视觉
+- 目标检测
 categories:
-- 计算机视觉
+- 目标检测
 mathjax: true
 ---
 

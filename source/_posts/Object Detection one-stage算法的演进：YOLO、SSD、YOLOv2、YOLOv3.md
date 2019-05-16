@@ -2,9 +2,9 @@
 title: Object Detection one-stage算法的演进：YOLO、SSD、YOLOv2、YOLOv3
 date: 2019-03-11 10:38:03
 tags:
-- 计算机视觉
+- 目标检测
 categories:
-- 计算机视觉
+- 目标检测
 mathjax: true
 ---
 

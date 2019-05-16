@@ -4,7 +4,7 @@ date: 2019-05-15 11:13:53
 tags:
 - CUDA编程
 categories:
-- CUDA编
+- CUDA编程
 ---
 
 # 基本概念

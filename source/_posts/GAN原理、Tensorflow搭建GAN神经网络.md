@@ -2,9 +2,9 @@
 title: GAN原理、Tensorflow搭建GAN神经网络
 date: 2019-03-30 20:45:35
 tags:
-- Tensorflow
+- 深度学习原理推导
 categories:
-- Tensorflow
+- 深度学习原理推导
 mathjax: true
 ---
 
