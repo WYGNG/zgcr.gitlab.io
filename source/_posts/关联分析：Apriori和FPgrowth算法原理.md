@@ -2,9 +2,9 @@
 title: 关联分析：Apriori和FPgrowth算法原理
 date: 2019-04-03 23:36:29
 tags:
-- 机器学习原理推导
+- 推荐系统
 categories:
-- 机器学习原理推导
+- 推荐系统
 mathjax: true
 ---
 
