@@ -13,7 +13,6 @@ categories:
 另外，数据集中有一个LCDataDictionary.xlsx文件，专门介绍每个特征的含义。
 **我的完整分析代码已经上传到我的kaggle kernel中:**
 https://www.kaggle.com/zgcr654321/data-analysis-visualization-and-loan-prediction 。
-
 # 数据可视化分析前的数据预处理
 ## 引入包和数据集
 ```python
@@ -861,7 +860,7 @@ print(loan_data.shape)
 f_loan_status_term.savefig("./pictures/loan times per term bar.jpg", dpi=200,
                            bbox_inches="tight")
 ```
-# 模型训练和预测前的数据集处理
+# 模型训练和预测前的数据预处理
 如果我们想直接进行模型训练和预测，跳过数据可视化分析部分，那么我们只需运行数据可视化分析前的数据预处理中所有部分的代码，然后接着运行模型训练和预测前的数据集处理中所有代码，再运行模型训练和预测代码即可。
 ## 引入包和载入数据集
 ```python
@@ -1261,9 +1260,7 @@ f.savefig("./pictures/xgb model feature importance top30.jpg", dpi=200, bbox_inc
 ```
 # 完整本地运行代码
 包含data_visualization.py和model_training_and_testing.py两个文件。
-
 data_visualization.py
-
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
