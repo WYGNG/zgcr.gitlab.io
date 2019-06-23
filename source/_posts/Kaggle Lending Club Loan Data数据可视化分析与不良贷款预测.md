@@ -955,54 +955,82 @@ plt.show()
 plt.close()
 f.savefig("./pictures/Correlation coefficient matrix.jpg", dpi=200, bbox_inches="tight")
 ```
-## 将特征和标签分开
+## 将特征和标签分开、特征one_hot编码化
 ```python
 # split features and labels
 X = loan_data.ix[:, loan_data.columns != "loan_status"]
 Y = loan_data["loan_status"]
-# Category features convert to one_hot code
+print(X.shape, Y.shape)
+# (2137073, 81) (2137073,)
 X = pd.get_dummies(X, drop_first=True)
 print(X.shape)
 # (2137073, 200)
 ```
-## 划分训练集和测试集
+## 划分训练集和测试集、数值型特征归一化
+这里我们要根据后面使用的是lr模型还是rf或xgb模型分别处理。
 我们按照8:2划分训练集和测试集，训练集用来进行模型学习，测试集用来测试模型性能。
-对于类别型特征，我们将其全部变为one_hot编码，注意有k个取值的类别型特征转为one_hot编码只需要k列one_hot编码特征即可。
+如果使用lr模型，那么数值型特征还要归一化。该数据集中存在异常点（如前面的dti特征中就有异常点），我们也无法确保其他特征中没有异常点，因此我们对数值型特征进行RobustScaler归一化，这种算法取第一分位数到第四分位数之间的数据生成均值和标准差，然后对特征进行z score标准化。
 ```python
+# # if use lr model to train and test,please run this cell
+# # divide training sets and testing sets
+# x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
+# print(x_train.shape, x_test.shape, y_train.shape, y_test.shape)
+# # (1709658, 200) (427415, 200) (1709658,) (427415,)
+# numerical_feature_name_2 = X.columns[(X.dtypes == "float64") | (X.dtypes == "int64")].tolist()
+# category_feature_name_2 = X.columns[X.dtypes == "uint8"].tolist()
+# print(len(numerical_feature_name_2), len(category_feature_name_2))
+# # 67 133
+# # 此时类别型特征已经全部变为one_hot编码(k-1列),数值型特征还需要归一化,由于特征值中有异常值,我们使用RobustScaler方法归一化
+# x_train_num, x_train_cat = x_train[numerical_feature_name_2], x_train[category_feature_name_2]
+# x_test_num, x_test_cat = x_test[numerical_feature_name_2], x_test[category_feature_name_2]
+# # get feature names
+# feature_names = list(x_train_num.columns)
+# feature_names.extend(list(x_train_cat.columns))
+# feature_names = np.array(feature_names)
+# print(feature_names.shape)
+# # 200
+# # robust scalar,默认为第一分位数到第四分位数之间的范围计算均值和方差,归一化还是z_score标准化
+# rob_scaler = RobustScaler()
+# x_train_num_rob = rob_scaler.fit_transform(x_train_num)
+# x_test_num_rob = rob_scaler.transform(x_test_num)
+# x_train_nom_pd = pd.DataFrame(np.hstack((x_train_num_rob, x_train_cat)))
+# x_test_nom_pd = pd.DataFrame(np.hstack((x_test_num_rob, x_test_cat)))
+# y_test_pd = pd.DataFrame(y_test)
+# x_train_sm_np, y_train_sm_np = x_train_nom_pd, y_train
+# print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shape)
+# # (1709658, 200) (1709658,) (427415, 200) (427415,)
+```
+如果使用rf或xgb模型，直接按8:2划分训练集和测试集即可。
+```python
+# if use rf or xgb model to train and test,please run this cell
 # divide training sets and testing sets
-numerical_feature_name_2 = X.columns[(X.dtypes == "float64") | (X.dtypes == "int64")].tolist()
-category_feature_name_2 = X.columns[X.dtypes == "uint8"].tolist()
 x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
 print(x_train.shape, x_test.shape, y_train.shape, y_test.shape)
 # (1709658, 200) (427415, 200) (1709658,) (427415,)
-print(len(numerical_feature_name_2), len(category_feature_name_2))
-# 67 133
-# 此时类别型特征已经全部变为one_hot编码(k-1列),数值型特征还需要归一化,由于特征值中有异常值,我们使用RobustScaler方法归一化
-x_train_num, x_train_cat = x_train[numerical_feature_name_2], x_train[category_feature_name_2]
-x_test_num, x_test_cat = x_test[numerical_feature_name_2], x_test[category_feature_name_2]
-# get feature names
-feature_names = list(x_train_num.columns)
-feature_names.extend(list(x_train_cat.columns))
-feature_names=np.array(feature_names)
+x_train_sm_np, x_test_nom_pd, y_train_sm_np, y_test = x_train, x_test, y_train, y_test
+feature_names = X.columns.tolist()
+feature_names = np.array(feature_names)
 print(feature_names.shape)
-# 200
+# (200,)
 ```
-## 数值型特征归一化
-该数据集中存在异常点(如前面的dti特征中就有异常点),我们也无法确保其他特征中没有异常点，因此我们对数值型特征进行RobustScaler归一化，这种算法取第一分位数到第四分位数之间的数据生成均值和标准差，然后对特征进行z score标准化。
-```python
-# robust scalar,默认为第一分位数到第四分位数之间的范围计算均值和方差,归一化还是z_score标准化
-rob_scaler = RobustScaler()
-x_train_num_rob = rob_scaler.fit_transform(x_train_num)
-x_test_num_rob = rob_scaler.transform(x_test_num)
-x_train_nom_pd = pd.DataFrame(np.hstack((x_train_num_rob, x_train_cat)))
-x_test_nom_pd = pd.DataFrame(np.hstack((x_test_num_rob, x_test_cat)))
-y_test_pd = pd.DataFrame(y_test)
-x_train_sm_np, y_train_sm_np = x_train_nom_pd, y_train
-print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shape)
-# (1709658, 200) (1709658,) (427415, 200) (427415,)
-```
+**注意:**
+对数据集做归一化和one_hot编码化实际上只是为了后面的lr模型准备的，数值型特征归一化后各特征的数值在同一个数量级上，这样lr模型的收敛速度会加快；类别型特征想要用在lr模型中必须进行one_hot编码化，这样一个原始的类别型特征就可以由其one_hot编码化后的kone_hot个特征在欧氏空间中进行距离的度量分类。
+**对于rf和xgb这样的树模型，数值型特征不做归一化直接进行模型训练完全没有问题。(做了以后再训练也可以，基本不影响模型最终性能，但增加了训练时间）**
+
+**树模型不需要进行归一化的原因:**
+* 对于rf和xgb这样的树模型，其实不需要进行数据集的归一化和one_hot编码化就可以直接进行模型训练。因为基于决策树的树模型其分裂节点时的决策规则计算出的分裂点不受数值缩放的影响（当然归一化后计算出的分裂点也是一样的），因此是否归一化对树模型的结构不会造成影响。
+* 另外，树模型是按照特征值进行排序的，排序的顺序不变，那么所属的分支以及分裂点就不会有不同。而且树模型不能进行梯度下降，因为构建树模型（回归树）寻找最优点时是通过寻找最优分裂点完成的，因此树模型是阶跃的，阶跃点是不可导的，并且求导没意义，也就不需要归一化。
+
+**树模型不需要进行one_hot编码化的原因:**
+* GBDT树处理高维稀疏矩阵的时候效果并不好，即使是低维的稀疏矩阵也未必比SVM好 ；
+* 类别型特征one_hot后再训练树，树的深度容易被加深；
+  **举例:**
+  假若某个特征A有1000个取值，CART分类树可以自动选择一个最佳的特征值a来分裂，得到一个2层的二叉树。如果将该特征使用onehot编码，变成1000维特征，每个特征只取0，1两种情况，再使用CART树来分裂，完全分裂的情况下，会对该特征生成的这1000维特征都要分裂一次，相当于这一个特征经过onehot编码后就会生成1000层二叉树（这是极端情况，节点的阈值数，基尼指数，或决策树的深度等限制会防止这种情况出现），这显然是不太合理的。
+* 如果用one_hot后的数据集构建随机森林，每次分裂随机选择一部分特征，那么one_hot后的特征容易被低估重要性（因为原始特征只有1个，现在拆成了2个，相当于特征的贡献度也被拆成了两部分），最后one_hot后的特征得到的importance会比实际值低。
+
+**需要注意的是，对于本数据集，其类别型特征的数据并不是int、float、bool中的某一种，这种情况下数据集是不能直接送入rf或xgb模型进行训练的，故对于本数据集，要想使用rf或xgb模型进行训练或预测，数据集可以不归一化，但必须one_hot编码化。**
 ## 样本不平衡问题的处理
-由于我们后面分别使用lr、rf、xgb模型进行模型训练和预测。使用lr模型时，使用参数class_weight="balanced"即根据样本比例确定样本的权重来进行训练即可解决样本不平衡问题。使用rf和xgb模型时，由于模型本身的特点，不需要进行样本不平衡的处理。
+**由于我们后面分别使用lr、rf、xgb模型进行模型训练和预测。使用lr模型时，使用参数class_weight="balanced"即根据样本比例确定样本的权重来进行训练即可解决样本不平衡问题。使用rf和xgb模型时，由于树模型本身的特点，不需要进行样本不平衡的处理。**
 我们还可以使用SMOTE算法生成少数类样本，使得不同类别的样本数量大致平衡。由于该算法占用内存较多，对于该数据集，你需要至少32GB内存才可以使用SMOTE算法。
 **SMOTE算法流程：**
 对于少数类中每一个样本x，以欧氏距离为标准计算它到少数类样本集中所有样本的距离，得到其k个近邻;
@@ -1010,6 +1038,7 @@ print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shap
 ```python
 # # we can choose class_weight="balanced" to deal with sample imbalance problem when we use logistic model
 # # if we use random foreast model or xgboost model,we don’t need to deal with sample imbalance problem
+
 # # besides,we can also use SMOTE to generate some sample of the category with low number of samples,but it needs over 16GB memory
 # # so,if you want to use SMOTE,you can run all these code on a local computer with at least 32GB memory
 # # SMOTE算法即对于少数类中的每一个样本a,执行N次下列操作:
@@ -1019,7 +1048,8 @@ print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shap
 # x_train_sm_np, y_train_sm_np = sm.fit_sample(x_train_nom_pd, y_train)
 # print(x_train_sm_np.shape, y_train_sm_np.shape)
 
-
+# SMOTE算法需要大量内存,如果使用了该算法,则本py文件需要机器具有至少32GB内存才能一次执行完,故我们可以先将SMOTE结果存起来
+# 然后直接读取SMOTE算法处理后的数据集进行预测,这样只需要16GB内存即可
 # x_train_sm_pd = pd.DataFrame(x_train_sm_np)
 # y_train_sm_pd = pd.DataFrame(y_train_sm_np)
 # x_train_sm_pd.to_csv("x_train_sm_np.csv", index=None)
@@ -1037,68 +1067,65 @@ print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shap
 # y_test = y_test.ravel()
 # print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shape)
 # # (2980148, 200) (2980148,) (427415, 200) (427415,)
-
-
-# if your computer's memory is not more than 16GB,it is not enough to run three models at the same time,you can choose one model to run.
 ```
 # 模型训练和预测
 ## 使用lr模型进行训练和预测
 sag即随机平均梯度下降，和普通梯度下降法的区别是每次迭代仅仅用一部分的样本来计算梯度，适合于样本数据多的时候；class_weight="balanced"根据用来训练的样本的各个类别的比例确定权重；n_jobs=-1表示使用所有CPU一起进行模型拟合和预测。
 ```python
-# use logistic regression model to train and predict
-# jobs=-1使用所有CPU进行运算
-# sag即随机平均梯度下降，和普通梯度下降法的区别是每次迭代仅仅用一部分的样本来计算梯度，适合于样本数据多的时候
-# class_weight="balanced"根据用来训练的样本的各个类别的比例确定权重
-print("use logistic model to train and predict")
-lr = LogisticRegression(solver="sag", class_weight="balanced", n_jobs=-1)
-lr.fit(x_train_sm_np, y_train_sm_np)
-lr_y_pred = lr.predict(x_test_nom_pd)
-lr_test_acc = accuracy_score(y_test, lr_y_pred)
-lr_classification_score = classification_report(y_test, lr_y_pred)
-print("Lr model test accuracy:{:.2f}".format(lr_test_acc))
-print("Lr model classification_score:\n", lr_classification_score)
-lr_confusion_score = confusion_matrix(y_test, lr_y_pred)
-f_lr, ax_lr = plt.subplots(1, 3, figsize=(15, 10))
-# 混淆矩阵的y轴为true label,x轴为pred label
-# 精确率,如对正类 ,所有预测为正类样本中中真实的正类占所有预测为正类的比例
-# 召回率,如对正类,所有真实的正类样本中有多少被预测为正类的比例
-# 分别计算预测预测的正样本数和负样本数以及真实的正样本数和负样本数
-lr_cm_pred_label_sum = lr_confusion_score.sum(axis=0)
-lr_cm_true_label_sum = lr_confusion_score.sum(axis=1)
-# 计算正样本和负样本的精确率和召回率
-lr_model_precision, lr_model_recall = np.empty([2, 2], dtype=float), np.empty([2, 2], dtype=float)
-lr_model_precision[0][0], lr_model_precision[1][0] = lr_confusion_score[0][0] / lr_cm_pred_label_sum[0], \
-                                                     lr_confusion_score[1][0] / lr_cm_pred_label_sum[0]
-lr_model_precision[0][1], lr_model_precision[1][1] = lr_confusion_score[0][1] / lr_cm_pred_label_sum[1], \
-                                                     lr_confusion_score[1][1] / lr_cm_pred_label_sum[1]
-lr_model_recall[0][0], lr_model_recall[0][1] = lr_confusion_score[0][0] / lr_cm_true_label_sum[0], \
-                                               lr_confusion_score[0][1] / lr_cm_true_label_sum[0]
-lr_model_recall[1][0], lr_model_recall[1][1] = lr_confusion_score[1][0] / lr_cm_true_label_sum[1], \
-                                               lr_confusion_score[1][1] / lr_cm_true_label_sum[1]
-sns.heatmap(lr_confusion_score, annot=True, fmt="d", cmap="Blues", ax=ax_lr[0], square=True, linewidths=0.5)
-sns.heatmap(lr_model_precision, annot=True, fmt=".5f", cmap="Blues", ax=ax_lr[1], square=True, linewidths=0.5)
-sns.heatmap(lr_model_recall, annot=True, fmt=".5f", cmap="Blues", ax=ax_lr[2], square=True, linewidths=0.5)
-ax_lr[0].set_title("lr confusion matrix", fontsize=16)
-ax_lr[1].set_title("lr model precision", fontsize=16)
-ax_lr[2].set_title("lr model recall", fontsize=16)
-ax_lr[0].set_xlabel("Predicted label", fontsize=16)
-ax_lr[0].set_ylabel("True label", fontsize=16)
-ax_lr[1].set_xlabel("Predicted label", fontsize=16)
-ax_lr[1].set_ylabel("True label", fontsize=16)
-ax_lr[2].set_xlabel("Predicted label", fontsize=16)
-ax_lr[2].set_ylabel("True label", fontsize=16)
-plt.show()
-plt.close()
-f_lr.savefig("./pictures/lr model confusion matrix.jpg", dpi=200, bbox_inches="tight")
-# result
-# Lr model test accuracy:0.88
-# Lr model classification_score:
-#                precision    recall  f1-score   support
-#          0.0       0.54      0.73      0.62     55318
-#          1.0       0.96      0.91      0.93    372097
-#    micro avg       0.88      0.88      0.88    427415
-#    macro avg       0.75      0.82      0.78    427415
-# weighted avg       0.90      0.88      0.89    427415
+# # use logistic regression model to train and predict
+# # jobs=-1使用所有CPU进行运算
+# # sag即随机平均梯度下降，和普通梯度下降法的区别是每次迭代仅仅用一部分的样本来计算梯度，适合于样本数据多的时候
+# # class_weight="balanced"根据用来训练的样本的各个类别的比例确定权重
+# print("use logistic model to train and predict")
+# lr = LogisticRegression(solver="sag", class_weight="balanced", n_jobs=-1)
+# lr.fit(x_train_sm_np, y_train_sm_np)
+# lr_y_pred = lr.predict(x_test_nom_pd)
+# lr_test_acc = accuracy_score(y_test, lr_y_pred)
+# lr_classification_score = classification_report(y_test, lr_y_pred)
+# print("Lr model test accuracy:{:.2f}".format(lr_test_acc))
+# print("Lr model classification_score:\n", lr_classification_score)
+# lr_confusion_score = confusion_matrix(y_test, lr_y_pred)
+# f_lr, ax_lr = plt.subplots(1, 3, figsize=(15, 10))
+# # 混淆矩阵的y轴为true label,x轴为pred label
+# # 精确率,如对正类 ,所有预测为正类样本中中真实的正类占所有预测为正类的比例
+# # 召回率,如对正类,所有真实的正类样本中有多少被预测为正类的比例
+# # 分别计算预测预测的正样本数和负样本数以及真实的正样本数和负样本数
+# lr_cm_pred_label_sum = lr_confusion_score.sum(axis=0)
+# lr_cm_true_label_sum = lr_confusion_score.sum(axis=1)
+# # 计算正样本和负样本的精确率和召回率
+# lr_model_precision, lr_model_recall = np.empty([2, 2], dtype=float), np.empty([2, 2], dtype=float)
+# lr_model_precision[0][0], lr_model_precision[1][0] = lr_confusion_score[0][0] / lr_cm_pred_label_sum[0], \
+#                                                      lr_confusion_score[1][0] / lr_cm_pred_label_sum[0]
+# lr_model_precision[0][1], lr_model_precision[1][1] = lr_confusion_score[0][1] / lr_cm_pred_label_sum[1], \
+#                                                      lr_confusion_score[1][1] / lr_cm_pred_label_sum[1]
+# lr_model_recall[0][0], lr_model_recall[0][1] = lr_confusion_score[0][0] / lr_cm_true_label_sum[0], \
+#                                                lr_confusion_score[0][1] / lr_cm_true_label_sum[0]
+# lr_model_recall[1][0], lr_model_recall[1][1] = lr_confusion_score[1][0] / lr_cm_true_label_sum[1], \
+#                                                lr_confusion_score[1][1] / lr_cm_true_label_sum[1]
+# sns.heatmap(lr_confusion_score, annot=True, fmt="d", cmap="Blues", ax=ax_lr[0], square=True, linewidths=0.5)
+# sns.heatmap(lr_model_precision, annot=True, fmt=".5f", cmap="Blues", ax=ax_lr[1], square=True, linewidths=0.5)
+# sns.heatmap(lr_model_recall, annot=True, fmt=".5f", cmap="Blues", ax=ax_lr[2], square=True, linewidths=0.5)
+# ax_lr[0].set_title("lr confusion matrix", fontsize=16)
+# ax_lr[1].set_title("lr model precision", fontsize=16)
+# ax_lr[2].set_title("lr model recall", fontsize=16)
+# ax_lr[0].set_xlabel("Predicted label", fontsize=16)
+# ax_lr[0].set_ylabel("True label", fontsize=16)
+# ax_lr[1].set_xlabel("Predicted label", fontsize=16)
+# ax_lr[1].set_ylabel("True label", fontsize=16)
+# ax_lr[2].set_xlabel("Predicted label", fontsize=16)
+# ax_lr[2].set_ylabel("True label", fontsize=16)
+# plt.show()
+# plt.close()
+# f_lr.savefig("./pictures/lr model confusion matrix.jpg", dpi=200, bbox_inches="tight")
+# # result
+# # Lr model test accuracy:0.88
+# # Lr model classification_score:
+# #                precision    recall  f1-score   support
+# #          0.0       0.54      0.73      0.62     55318
+# #          1.0       0.96      0.91      0.93    372097
+# #    micro avg       0.88      0.88      0.88    427415
+# #    macro avg       0.75      0.82      0.78    427415
+# # weighted avg       0.90      0.88      0.89    427415
 ```
 混淆矩阵从左到右三个子图为lr模型预测标签/实际标签的样本的数量，lr模型预测负/正样本的精确率（第二张图左上角和右下角数值），lr模型预测负/正样本的召回率（第三张图左上角和右下角数值）。
 Lr模型预测总体准确率0.88，其中正样本预测精确率0.96，但负样本预测精确率很低，只有0.54。同时正样本预测召回率0.91，负样本召回率0.73也很低。由于我们更想用模型预测出不良贷款，而这个模型的负样本准确率和召回率太低了，模型的预测性能不太好。
@@ -1184,6 +1211,7 @@ f.savefig("./pictures/rf model feature importance top30.jpg", dpi=200, bbox_inch
 n_estimators=200表示使用200课回归树，nthread=-1表示使用CPU所有线程进行模型拟合和预测。
 ```python
 # use XGBoost model to train and predict
+print("use XGBoost model to train and predict")
 xgb = XGBClassifier(n_estimators=200, nthread=-1)
 xgb.fit(x_train_sm_np, y_train_sm_np)
 xgb_y_pred = xgb.predict(x_test_nom_pd)
@@ -1226,15 +1254,15 @@ ax_xgb[2].set_ylabel("True label", fontsize=16)
 plt.show()
 plt.close()
 f_xgb.savefig("./pictures/xgb model confusion matrix.jpg", dpi=200, bbox_inches="tight")
-# Xgb model test accuracy:0.9809
+# Xgb model test accuracy:0.9822
 # Xgb model classification_score:
 #                precision    recall  f1-score   support
 #
-#          0.0       1.00      0.85      0.92     55318
+#          0.0       1.00      0.86      0.93     55318
 #          1.0       0.98      1.00      0.99    372097
 #
 #    micro avg       0.98      0.98      0.98    427415
-#    macro avg       0.99      0.93      0.95    427415
+#    macro avg       0.99      0.93      0.96    427415
 # weighted avg       0.98      0.98      0.98    427415
 ```
 混淆矩阵从左到右三个子图为xgb模型预测标签/实际标签的样本的数量，xgb模型预测负/正样本的精确率（第二张图左上角和右下角数值），xgb模型预测负/正样本的召回率（第三张图左上角和右下角数值）。
@@ -1274,6 +1302,10 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 warnings.simplefilter(action="ignore", category=DeprecationWarning)
+
+# This is my free plotly account,this account allows up to 100 images to be generated every 24 hours.Please use your own plotly account.
+plotly.tools.set_credentials_file(username="zgcr", api_key="GQW92qmUOFbZmTQwQtJ1")
+plotly.tools.set_config_file(world_readable=True)
 
 # Data preprocessing before Data analysis visualization
 loan_data = pd.read_csv("loan.csv", low_memory=False)
@@ -1384,7 +1416,7 @@ print(loan_data.shape)
 
 # save the dataset after all missing value operation
 loan_data.to_csv("loan_clean_data.csv", index=None)
-loan_data = pd.read_csv("loan_clean_data.csv", low_memory=False)
+# loan_data = pd.read_csv("loan_clean_data.csv", low_memory=False)
 print(loan_data.shape)
 # (2137073, 87)
 
@@ -1443,7 +1475,6 @@ ax_loan_per_year[1].set_ylabel("loan amount", fontsize=16)
 plt.show()
 plt.close()
 loan_data.drop(["year"], axis=1, inplace=True)
-print(loan_data.shape)
 # (2137073, 87)
 f_loan_per_year.savefig("./pictures/loan times and loan amount per year.jpg", dpi=200, bbox_inches="tight")
 
@@ -1486,7 +1517,6 @@ f_loan_per_year.savefig("./pictures/loan times and loan amount per year.jpg", dp
 # # 3D图不能保存为png格式
 # mean_loan_amnt_per_year_per_month_line3d.render(path="./pictures/mean loan amnt per year per month line3D.html")
 # loan_data.drop(["month","year"], axis=1, inplace=True)
-# print(loan_data.shape)
 
 
 # # 各年各月贷款笔数3D柱状图和3D折线图
@@ -1531,11 +1561,6 @@ f_loan_per_year.savefig("./pictures/loan times and loan amount per year.jpg", dp
 # # 3D图不能保存为png格式
 # loan_times_per_month_per_year_line3d.render(path="./pictures/loan times per month per year line3D.html")
 # loan_data.drop(["month","year"], axis=1, inplace=True)
-# print(loan_data.shape)
-
-# This is my free plotly account,this account allows up to 100 images to be generated every 24 hours.Please use your own plotly account.
-plotly.tools.set_credentials_file(username="zgcr", api_key="GQW92qmUOFbZmTQwQtJ1")
-plotly.tools.set_config_file(world_readable=True)
 
 # the map of geographical coordinates of each state"s loan figures
 # addr_state即申请贷款的人的所属州,是两位代码,可以被plotly识别
@@ -1665,7 +1690,6 @@ ax_loan_times_per_income.set_ylabel("loan times", fontsize=16)
 plt.show()
 plt.close()
 loan_data.drop(["income"], axis=1, inplace=True)
-print(loan_data.shape)
 f_loan_times_per_income.savefig("./pictures/loan times per income bar.jpg", dpi=200, bbox_inches="tight")
 
 # The ratio of good loans and bad loans for each year
@@ -1709,7 +1733,6 @@ ax_loan_status[1].set_ylabel("Loans percent", fontsize=16)
 plt.show()
 plt.close()
 loan_data.drop(["loan_status_count", "year"], axis=1, inplace=True)
-print(loan_data.shape)
 f_loan_status.savefig("./pictures/good loans and bad loans percent per year.jpg", dpi=200,
                       bbox_inches="tight")
 
@@ -1757,7 +1780,6 @@ layout = dict(title="bad loans num per state map", titlefont=dict(color="rgb(0,0
               geo=dict(scope="usa", projection=dict(type="albers usa")))
 fig = dict(data=data, layout=layout)
 loan_data.drop(["loan_status_count_2"], axis=1, inplace=True)
-print(loan_data.shape)
 # filename为网站上个人空间中保存的文件名
 py.plot(fig, filename="bad loans num per state map", auto_open=True)
 # filename为本地保存的文件名,plotly本地保存只支持png,svg,jpeg,pdf
@@ -1813,7 +1835,6 @@ layout = dict(title="bad loans percent per state map", titlefont=dict(color="rgb
               geo=dict(scope="usa", projection=dict(type="albers usa")))
 fig = dict(data=data, layout=layout)
 loan_data.drop(["loan_status_count_3"], axis=1, inplace=True)
-print(loan_data.shape)
 # filename为网站上个人空间中保存的文件名
 py.plot(fig, filename="bad loans percent per state map", auto_open=True)
 # filename为本地保存的文件名,plotly本地保存只支持png,svg,jpeg,pdf
@@ -1850,7 +1871,6 @@ ax_loan_status_purpose.set_ylabel("per purpose loans percent", fontsize=16)
 plt.show()
 plt.close()
 loan_data.drop(["loan_status_count_4"], axis=1, inplace=True)
-print(loan_data.shape)
 f_loan_status_purpose.savefig("./pictures/Loan status per purpose percent bar.jpg", dpi=200,
                               bbox_inches="tight")
 
@@ -1872,7 +1892,6 @@ ax_loan_status_home.set_ylabel("per home ownership loans percent", fontsize=16)
 plt.show()
 plt.close()
 loan_data.drop(["loan_status_count_5"], axis=1, inplace=True)
-print(loan_data.shape)
 f_loan_status_home.savefig("./pictures/Loan status per home ownership percent bar.jpg", dpi=200,
                            bbox_inches="tight")
 
@@ -1898,7 +1917,6 @@ ax_loan_status_income.set_ylabel("per income loans percent", fontsize=16)
 plt.show()
 plt.close()
 loan_data.drop(["loan_status_count_6", "income"], axis=1, inplace=True)
-print(loan_data.shape)
 f_loan_status_income.savefig("./pictures/Loan status per income percent bar.jpg", dpi=200,
                              bbox_inches="tight")
 
@@ -1920,7 +1938,6 @@ ax_loan_status_grade.set_xlabel("grade", fontsize=16)
 ax_loan_status_grade.set_ylabel("per grade loans percent", fontsize=16)
 plt.show()
 plt.close()
-print(loan_data.shape)
 f_loan_status_grade.savefig("./pictures/Loan status per grade percent bar.jpg", dpi=200,
                             bbox_inches="tight")
 
@@ -1955,7 +1972,6 @@ ax_inc_rate_grade.set_ylabel("mean int rate", fontsize=16)
 plt.show()
 plt.close()
 loan_data.drop(["loan_status_count_8"], axis=1, inplace=True)
-print(loan_data.shape)
 f_inc_rate_grade.savefig("./pictures/mean int rate per grade bar.jpg", dpi=200,
                          bbox_inches="tight")
 
@@ -2004,7 +2020,6 @@ ax_dti_per_loan_status[0].set_xlabel("dti", fontsize=16)
 ax_dti_per_loan_status[1].set_ylabel("dti", fontsize=16)
 plt.show()
 plt.close()
-print(loan_data.shape)
 f_dti_per_loan_status.savefig("./pictures/dti distribution per loan status.jpg", dpi=200, bbox_inches="tight")
 
 # ratio of short-term and long-term loans for good loans and bad loans
@@ -2026,7 +2041,6 @@ ax_loan_status_term.set_ylabel("loan times", fontsize=16)
 plt.show()
 plt.close()
 loan_data.drop(["loan_status_count_10"], axis=1, inplace=True)
-print(loan_data.shape)
 f_loan_status_term.savefig("./pictures/loan times per term bar.jpg", dpi=200,
                            bbox_inches="tight")
 ```
@@ -2108,43 +2122,55 @@ f.savefig("./pictures/Correlation coefficient matrix.jpg", dpi=200, bbox_inches=
 # split features and labels
 X = loan_data.ix[:, loan_data.columns != "loan_status"]
 Y = loan_data["loan_status"]
-# Category features convert to one_hot code
+print(X.shape, Y.shape)
+# (2137073, 81) (2137073,)
 X = pd.get_dummies(X, drop_first=True)
 print(X.shape)
 # (2137073, 200)
 
+# # if use lr model to train and test,please run this cell
+# # divide training sets and testing sets
+# x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
+# print(x_train.shape, x_test.shape, y_train.shape, y_test.shape)
+# # (1709658, 200) (427415, 200) (1709658,) (427415,)
+# numerical_feature_name_2 = X.columns[(X.dtypes == "float64") | (X.dtypes == "int64")].tolist()
+# category_feature_name_2 = X.columns[X.dtypes == "uint8"].tolist()
+# print(len(numerical_feature_name_2), len(category_feature_name_2))
+# # 67 133
+# # 此时类别型特征已经全部变为one_hot编码(k-1列),数值型特征还需要归一化,由于特征值中有异常值,我们使用RobustScaler方法归一化
+# x_train_num, x_train_cat = x_train[numerical_feature_name_2], x_train[category_feature_name_2]
+# x_test_num, x_test_cat = x_test[numerical_feature_name_2], x_test[category_feature_name_2]
+# # get feature names
+# feature_names = list(x_train_num.columns)
+# feature_names.extend(list(x_train_cat.columns))
+# feature_names = np.array(feature_names)
+# print(feature_names.shape)
+# # 200
+# # robust scalar,默认为第一分位数到第四分位数之间的范围计算均值和方差,归一化还是z_score标准化
+# rob_scaler = RobustScaler()
+# x_train_num_rob = rob_scaler.fit_transform(x_train_num)
+# x_test_num_rob = rob_scaler.transform(x_test_num)
+# x_train_nom_pd = pd.DataFrame(np.hstack((x_train_num_rob, x_train_cat)))
+# x_test_nom_pd = pd.DataFrame(np.hstack((x_test_num_rob, x_test_cat)))
+# y_test_pd = pd.DataFrame(y_test)
+# x_train_sm_np, y_train_sm_np = x_train_nom_pd, y_train
+# print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shape)
+# # (1709658, 200) (1709658,) (427415, 200) (427415,)
+
+
+# if use rf or xgb model to train and test,please run this cell
 # divide training sets and testing sets
-numerical_feature_name_2 = X.columns[(X.dtypes == "float64") | (X.dtypes == "int64")].tolist()
-category_feature_name_2 = X.columns[X.dtypes == "uint8"].tolist()
 x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
 print(x_train.shape, x_test.shape, y_train.shape, y_test.shape)
 # (1709658, 200) (427415, 200) (1709658,) (427415,)
-print(len(numerical_feature_name_2), len(category_feature_name_2))
-# 67 133
-# 此时类别型特征已经全部变为one_hot编码(k-1列),数值型特征还需要归一化,由于特征值中有异常值,我们使用RobustScaler方法归一化
-x_train_num, x_train_cat = x_train[numerical_feature_name_2], x_train[category_feature_name_2]
-x_test_num, x_test_cat = x_test[numerical_feature_name_2], x_test[category_feature_name_2]
-# get feature names
-feature_names = list(x_train_num.columns)
-feature_names.extend(list(x_train_cat.columns))
-feature_names=np.array(feature_names)
+x_train_sm_np, x_test_nom_pd, y_train_sm_np, y_test = x_train, x_test, y_train, y_test
+feature_names = X.columns.tolist()
+feature_names = np.array(feature_names)
 print(feature_names.shape)
-# 200
-
-# robust scalar,默认为第一分位数到第四分位数之间的范围计算均值和方差,归一化还是z_score标准化
-rob_scaler = RobustScaler()
-x_train_num_rob = rob_scaler.fit_transform(x_train_num)
-x_test_num_rob = rob_scaler.transform(x_test_num)
-x_train_nom_pd = pd.DataFrame(np.hstack((x_train_num_rob, x_train_cat)))
-x_test_nom_pd = pd.DataFrame(np.hstack((x_test_num_rob, x_test_cat)))
-y_test_pd = pd.DataFrame(y_test)
-x_train_sm_np, y_train_sm_np = x_train_nom_pd, y_train
-print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shape)
-# (1709658, 200) (1709658,) (427415, 200) (427415,)
-
 
 # # we can choose class_weight="balanced" to deal with sample imbalance problem when we use logistic model
 # # if we use random foreast model or xgboost model,we don’t need to deal with sample imbalance problem
+
 # # besides,we can also use SMOTE to generate some sample of the category with low number of samples,but it needs over 16GB memory
 # # so,if you want to use SMOTE,you can run all these code on a local computer with at least 32GB memory
 # # SMOTE算法即对于少数类中的每一个样本a,执行N次下列操作:
@@ -2154,7 +2180,8 @@ print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shap
 # x_train_sm_np, y_train_sm_np = sm.fit_sample(x_train_nom_pd, y_train)
 # print(x_train_sm_np.shape, y_train_sm_np.shape)
 
-
+# SMOTE算法需要大量内存,如果使用了该算法,则本py文件需要机器具有至少32GB内存才能一次执行完,故我们可以先将SMOTE结果存起来
+# 然后直接读取SMOTE算法处理后的数据集进行预测,这样只需要16GB内存即可
 # x_train_sm_pd = pd.DataFrame(x_train_sm_np)
 # y_train_sm_pd = pd.DataFrame(y_train_sm_np)
 # x_train_sm_pd.to_csv("x_train_sm_np.csv", index=None)
@@ -2174,63 +2201,60 @@ print(x_train_sm_np.shape, y_train_sm_np.shape, x_test_nom_pd.shape, y_test.shap
 # # (2980148, 200) (2980148,) (427415, 200) (427415,)
 
 
-# if your computer's memory is not more than 16GB,it is not enough to run three models at the same time,you can choose one model to run.
-
-
-# use logistic regression model to train and predict
-# jobs=-1使用所有CPU进行运算
-# sag即随机平均梯度下降，和普通梯度下降法的区别是每次迭代仅仅用一部分的样本来计算梯度，适合于样本数据多的时候
-# class_weight="balanced"根据用来训练的样本的各个类别的比例确定权重
-print("use logistic model to train and predict")
-lr = LogisticRegression(solver="sag", class_weight="balanced", n_jobs=-1)
-lr.fit(x_train_sm_np, y_train_sm_np)
-lr_y_pred = lr.predict(x_test_nom_pd)
-lr_test_acc = accuracy_score(y_test, lr_y_pred)
-lr_classification_score = classification_report(y_test, lr_y_pred)
-print("Lr model test accuracy:{:.2f}".format(lr_test_acc))
-print("Lr model classification_score:\n", lr_classification_score)
-lr_confusion_score = confusion_matrix(y_test, lr_y_pred)
-f_lr, ax_lr = plt.subplots(1, 3, figsize=(15, 10))
-# 混淆矩阵的y轴为true label,x轴为pred label
-# 精确率,如对正类 ,所有预测为正类样本中中真实的正类占所有预测为正类的比例
-# 召回率,如对正类,所有真实的正类样本中有多少被预测为正类的比例
-# 分别计算预测预测的正样本数和负样本数以及真实的正样本数和负样本数
-lr_cm_pred_label_sum = lr_confusion_score.sum(axis=0)
-lr_cm_true_label_sum = lr_confusion_score.sum(axis=1)
-# 计算正样本和负样本的精确率和召回率
-lr_model_precision, lr_model_recall = np.empty([2, 2], dtype=float), np.empty([2, 2], dtype=float)
-lr_model_precision[0][0], lr_model_precision[1][0] = lr_confusion_score[0][0] / lr_cm_pred_label_sum[0], \
-                                                     lr_confusion_score[1][0] / lr_cm_pred_label_sum[0]
-lr_model_precision[0][1], lr_model_precision[1][1] = lr_confusion_score[0][1] / lr_cm_pred_label_sum[1], \
-                                                     lr_confusion_score[1][1] / lr_cm_pred_label_sum[1]
-lr_model_recall[0][0], lr_model_recall[0][1] = lr_confusion_score[0][0] / lr_cm_true_label_sum[0], \
-                                               lr_confusion_score[0][1] / lr_cm_true_label_sum[0]
-lr_model_recall[1][0], lr_model_recall[1][1] = lr_confusion_score[1][0] / lr_cm_true_label_sum[1], \
-                                               lr_confusion_score[1][1] / lr_cm_true_label_sum[1]
-sns.heatmap(lr_confusion_score, annot=True, fmt="d", cmap="Blues", ax=ax_lr[0], square=True, linewidths=0.5)
-sns.heatmap(lr_model_precision, annot=True, fmt=".5f", cmap="Blues", ax=ax_lr[1], square=True, linewidths=0.5)
-sns.heatmap(lr_model_recall, annot=True, fmt=".5f", cmap="Blues", ax=ax_lr[2], square=True, linewidths=0.5)
-ax_lr[0].set_title("lr confusion matrix", fontsize=16)
-ax_lr[1].set_title("lr model precision", fontsize=16)
-ax_lr[2].set_title("lr model recall", fontsize=16)
-ax_lr[0].set_xlabel("Predicted label", fontsize=16)
-ax_lr[0].set_ylabel("True label", fontsize=16)
-ax_lr[1].set_xlabel("Predicted label", fontsize=16)
-ax_lr[1].set_ylabel("True label", fontsize=16)
-ax_lr[2].set_xlabel("Predicted label", fontsize=16)
-ax_lr[2].set_ylabel("True label", fontsize=16)
-plt.show()
-plt.close()
-f_lr.savefig("./pictures/lr model confusion matrix.jpg", dpi=200, bbox_inches="tight")
-# result
-# Lr model test accuracy:0.88
-# Lr model classification_score:
-#                precision    recall  f1-score   support
-#          0.0       0.54      0.73      0.62     55318
-#          1.0       0.96      0.91      0.93    372097
-#    micro avg       0.88      0.88      0.88    427415
-#    macro avg       0.75      0.82      0.78    427415
-# weighted avg       0.90      0.88      0.89    427415
+# # use logistic regression model to train and predict
+# # jobs=-1使用所有CPU进行运算
+# # sag即随机平均梯度下降，和普通梯度下降法的区别是每次迭代仅仅用一部分的样本来计算梯度，适合于样本数据多的时候
+# # class_weight="balanced"根据用来训练的样本的各个类别的比例确定权重
+# print("use logistic model to train and predict")
+# lr = LogisticRegression(solver="sag", class_weight="balanced", n_jobs=-1)
+# lr.fit(x_train_sm_np, y_train_sm_np)
+# lr_y_pred = lr.predict(x_test_nom_pd)
+# lr_test_acc = accuracy_score(y_test, lr_y_pred)
+# lr_classification_score = classification_report(y_test, lr_y_pred)
+# print("Lr model test accuracy:{:.2f}".format(lr_test_acc))
+# print("Lr model classification_score:\n", lr_classification_score)
+# lr_confusion_score = confusion_matrix(y_test, lr_y_pred)
+# f_lr, ax_lr = plt.subplots(1, 3, figsize=(15, 10))
+# # 混淆矩阵的y轴为true label,x轴为pred label
+# # 精确率,如对正类 ,所有预测为正类样本中中真实的正类占所有预测为正类的比例
+# # 召回率,如对正类,所有真实的正类样本中有多少被预测为正类的比例
+# # 分别计算预测预测的正样本数和负样本数以及真实的正样本数和负样本数
+# lr_cm_pred_label_sum = lr_confusion_score.sum(axis=0)
+# lr_cm_true_label_sum = lr_confusion_score.sum(axis=1)
+# # 计算正样本和负样本的精确率和召回率
+# lr_model_precision, lr_model_recall = np.empty([2, 2], dtype=float), np.empty([2, 2], dtype=float)
+# lr_model_precision[0][0], lr_model_precision[1][0] = lr_confusion_score[0][0] / lr_cm_pred_label_sum[0], \
+#                                                      lr_confusion_score[1][0] / lr_cm_pred_label_sum[0]
+# lr_model_precision[0][1], lr_model_precision[1][1] = lr_confusion_score[0][1] / lr_cm_pred_label_sum[1], \
+#                                                      lr_confusion_score[1][1] / lr_cm_pred_label_sum[1]
+# lr_model_recall[0][0], lr_model_recall[0][1] = lr_confusion_score[0][0] / lr_cm_true_label_sum[0], \
+#                                                lr_confusion_score[0][1] / lr_cm_true_label_sum[0]
+# lr_model_recall[1][0], lr_model_recall[1][1] = lr_confusion_score[1][0] / lr_cm_true_label_sum[1], \
+#                                                lr_confusion_score[1][1] / lr_cm_true_label_sum[1]
+# sns.heatmap(lr_confusion_score, annot=True, fmt="d", cmap="Blues", ax=ax_lr[0], square=True, linewidths=0.5)
+# sns.heatmap(lr_model_precision, annot=True, fmt=".5f", cmap="Blues", ax=ax_lr[1], square=True, linewidths=0.5)
+# sns.heatmap(lr_model_recall, annot=True, fmt=".5f", cmap="Blues", ax=ax_lr[2], square=True, linewidths=0.5)
+# ax_lr[0].set_title("lr confusion matrix", fontsize=16)
+# ax_lr[1].set_title("lr model precision", fontsize=16)
+# ax_lr[2].set_title("lr model recall", fontsize=16)
+# ax_lr[0].set_xlabel("Predicted label", fontsize=16)
+# ax_lr[0].set_ylabel("True label", fontsize=16)
+# ax_lr[1].set_xlabel("Predicted label", fontsize=16)
+# ax_lr[1].set_ylabel("True label", fontsize=16)
+# ax_lr[2].set_xlabel("Predicted label", fontsize=16)
+# ax_lr[2].set_ylabel("True label", fontsize=16)
+# plt.show()
+# plt.close()
+# f_lr.savefig("./pictures/lr model confusion matrix.jpg", dpi=200, bbox_inches="tight")
+# # result
+# # Lr model test accuracy:0.88
+# # Lr model classification_score:
+# #                precision    recall  f1-score   support
+# #          0.0       0.54      0.73      0.62     55318
+# #          1.0       0.96      0.91      0.93    372097
+# #    micro avg       0.88      0.88      0.88    427415
+# #    macro avg       0.75      0.82      0.78    427415
+# # weighted avg       0.90      0.88      0.89    427415
 
 
 # use randomforest model to train and predict
@@ -2276,7 +2300,7 @@ ax_rf[2].set_ylabel("True label", fontsize=16)
 plt.show()
 plt.close()
 f_rf.savefig("./pictures/rf model confusion matrix.jpg", dpi=200, bbox_inches="tight")
-# Rf model test accuracy:0.9828
+# Rf model test accuracy:0.9830
 # rf model classification_score:
 #                precision    recall  f1-score   support
 #
@@ -2306,6 +2330,7 @@ plt.close()
 f.savefig("./pictures/rf model feature importance top30.jpg", dpi=200, bbox_inches="tight")
 
 # use XGBoost model to train and predict
+print("use XGBoost model to train and predict")
 xgb = XGBClassifier(n_estimators=200, nthread=-1)
 xgb.fit(x_train_sm_np, y_train_sm_np)
 xgb_y_pred = xgb.predict(x_test_nom_pd)
@@ -2348,15 +2373,15 @@ ax_xgb[2].set_ylabel("True label", fontsize=16)
 plt.show()
 plt.close()
 f_xgb.savefig("./pictures/xgb model confusion matrix.jpg", dpi=200, bbox_inches="tight")
-# Xgb model test accuracy:0.9809
+# Xgb model test accuracy:0.9822
 # Xgb model classification_score:
 #                precision    recall  f1-score   support
 #
-#          0.0       1.00      0.85      0.92     55318
+#          0.0       1.00      0.86      0.93     55318
 #          1.0       0.98      1.00      0.99    372097
 #
 #    micro avg       0.98      0.98      0.98    427415
-#    macro avg       0.99      0.93      0.95    427415
+#    macro avg       0.99      0.93      0.96    427415
 # weighted avg       0.98      0.98      0.98    427415
 
 
