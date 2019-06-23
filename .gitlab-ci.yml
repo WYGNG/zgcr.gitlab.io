@@ -11,6 +11,7 @@ pages:
   - npm i -S hexo-prism-plugin
   - npm install hexo-generator-search --save
   - npm i --save hexo-wordcount
+  - npm install --save hexo-filter-flowchart
   - npm i hexo-permalink-pinyin --save
   - hexo clean
   - hexo generate
